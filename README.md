@@ -1,6 +1,6 @@
 # openPMD.jl
 
-A Julia interface to
+A Julia interface for
 [openPMD-api](https://github.com/openPMD/openPMD-api), the reference
 API for the open Particle/Mesh-Data Adaptable standard.
 

@@ -62,6 +62,7 @@ export set_custom_transform!
 """
     size(dset::Dataset)
 """
+# TODO: Convert to `Int` (or `Int64`?)
 @cxxdereference Base.size(dset::Dataset) = reverse(Tuple(extent1(dset)))
 
 """

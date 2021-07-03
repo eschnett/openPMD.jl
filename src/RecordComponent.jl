@@ -32,6 +32,7 @@ export reset_dataset!
 @doc """
     size(comp::RecordComponent)
 """ Base.size
+# TODO: Convert to `Int` (or `Int64`?)
 @cxxdereference Base.size(comp::RecordComponent) = Tuple(get_extent1(comp))
 
 @doc """

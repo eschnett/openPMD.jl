@@ -3,7 +3,16 @@ module openPMD
 using CxxWrap
 using StaticArrays
 
-@wrapmodule "/Users/eschnett/src/openPMD-api/build/lib/libopenPMD_jl.dylib"
+# @wrapmodule "/Users/eschnett/src/openPMD-api/build/lib/libopenPMD_jl.dylib"
+
+# Build openPMD_api in Yggdrasil via:
+#     julia --color=yes build_tarballs.jl --debug --verbose --deploy=local --register x86_64-apple-darwin
+# Then use the resulting package via:
+#     Pkg> add openPMD_api_jll
+#     Pkg> develop openPMD_api_jll
+
+using openPMD_api_jll
+@wrapmodule openPMD_api_jll.libopenPMD_jl_path
 
 __init__() = @initcxx
 
