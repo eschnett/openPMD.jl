@@ -8,5 +8,8 @@
     @test vars["json"]
     exts = get_file_extensions()
     @test exts isa AbstractVector{<:AbstractString}
+    @test "bp" ∈ exts
     @test "json" ∈ exts
+    @test "ssc" ∈ exts
+    @test "sst" ∈ exts
 end

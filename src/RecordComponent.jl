@@ -32,8 +32,7 @@ export reset_dataset!
 @doc """
     size(comp::RecordComponent)
 """ Base.size
-# TODO: Convert to `Int` (or `Int64`?)
-@cxxdereference Base.size(comp::RecordComponent) = Tuple(get_extent1(comp))
+@cxxdereference Base.size(comp::RecordComponent) = reverse(Int.(Tuple(get_extent1(comp))))
 
 @doc """
     make_constant(comp::RecordComponent, value::OpenMPType)

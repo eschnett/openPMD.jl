@@ -66,8 +66,8 @@
         @test name == name(series)
     end
 
-    bend = backend(series)
-    @test bend == "JSON"
+    be = backend(series)
+    @test be == "JSON"
 
     # flush(series)
 

@@ -29,10 +29,10 @@ Base.keytype(::Type{Container{T,K}}) where {T,K} = K
 """ Base.getindex
 @cxxdereference Base.getindex(cont::Container, key) = getindex1(cont, key)
 
-@doc """
-    get!(cont::Container, key)
-""" Base.get!
-@cxxdereference Base.get!(cont::Container, key) = get1!(cont, key)
+# @doc """
+#     get!(cont::Container, key)
+# """ Base.get!
+# @cxxdereference Base.get!(cont::Container, key) = get1!(cont, key)
 
 @doc """
     setindex!(cont::Container, value, key)

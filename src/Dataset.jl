@@ -2,6 +2,8 @@
 
 """
     const Extent = Union{NTuple{D,Int},SVector{D,Int},Vector{D}}
+
+Extent describes the size (shape) of a dataset. See [`Offset`](@ref).
 """
 const Extent{D} = Union{NTuple{D,Int},SVector{D,Int},Vector{D}}
 export Extent
@@ -14,6 +16,9 @@ wrap_extent(extent::Tuple) = wrap_extent(UInt64[extent...])
 
 """
     const Offset = Union{NTuple{D,Int},SVector{D,Int},Vector{D}}
+
+Offset describes the location of a dataset in the containing mesh's
+index space. See [`Extent`](@ref).
 """
 const Offset{D} = Union{NTuple{D,Int},SVector{D,Int},Vector{D}}
 export Offset
@@ -22,32 +27,40 @@ wrap_offset(offset) = wrap_extent(offset)
 
 @doc """
     mutable struct Dataset
-        ....
+        ...
     end
     Dataset(::Type{<:OpenPMDType}, extent::Extent, options::AbstractString="{}")
     Dataset(extent::Extent)
+
+Datasets only describe a dataset, they do not hold any data. Datasets
+are value objects that can be copied.
 """ Dataset
 export Dataset
 
-for (otype, jtype) in julia_types
-    @eval begin
-        @cxxdereference function Dataset(::Type{$jtype}, extent::Extent, options::AbstractString="{}")
-            return Dataset($otype, wrap_extent(extent), options)
-        end
-    end
+function Dataset(T::Type{<:OpenPMDType}, extent::Extent, options::AbstractString="{}")
+    return Dataset(openpmd_type(T), wrap_extent(extent), options)
 end
+Dataset(extent::Extent) = Dataset(wrap_extent(extent))
+
+# for (otype, jtype) in julia_types
+#     @eval begin
+#         @cxxdereference function Dataset(::Type{$jtype}, extent::Extent, options::AbstractString="{}")
+#             return Dataset1($otype, wrap_extent(extent), options)
+#         end
+#     end
+# end
 
 @doc """
     extend!(dset::Dataset, newextent::Extent)
 """ extend!
 export extend!
-@cxxdereference extentd!(dset::Dataset, newextent::Extent) = extend1!(dset, wrap_extent(newextent))
+extend!(dset::Dataset, newextent::Extent) = extend1!(dset, wrap_extent(newextent))
 
 @doc """
     set_chunk_size!(dset::Dataset, chunk_size::Extent)
 """ set_chunk_size!
 export set_chunk_size!
-@cxxdereference set_chunk_size!(dset::Dataset, chunk_size::Extent) = set_chunk_size1!(dset, wrap_extent(chunk_size))
+set_chunk_size!(dset::Dataset, chunk_size::Extent) = set_chunk_size1!(dset, wrap_extent(chunk_size))
 
 @doc """
     set_compression!(dset::Dataset, compression::AbstractString, level::Int)
@@ -62,23 +75,22 @@ export set_custom_transform!
 """
     size(dset::Dataset)
 """
-# TODO: Convert to `Int` (or `Int64`?)
-@cxxdereference Base.size(dset::Dataset) = reverse(Tuple(extent1(dset)))
+Base.size(dset::Dataset) = reverse(Int.(Tuple(extent1(dset))))
 
 """
     eltype(dset::Dataset)
 """
-@cxxdereference Base.eltype(dset::Dataset) = julia_type(dtype1(dset))
+Base.eltype(dset::Dataset) = julia_type(dtype1(dset))
 
 """
     ndims(dset::Dataset)
 """
-@cxxdereference Base.ndims(dset::Dataset) = Int(rank1(dset))
+Base.ndims(dset::Dataset) = Int(rank1(dset))
 
 """
     chunk_size(dset::Dataset)
 """
-@cxxdereference chunk_size(dset::Dataset) = reverse(Tuple(chunk_size1(dset)))
+chunk_size(dset::Dataset) = reverse(Int.(Tuple(chunk_size1(dset))))
 export chunk_size
 
 @doc """

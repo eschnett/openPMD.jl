@@ -77,6 +77,7 @@ const type_symbols = Dict{Datatype,Symbol}(CHAR => :CHAR, UCHAR => :UCHAR, SHORT
                                            VEC_ULONG => :VEC_ULONG, VEC_ULONGLONG => :VEC_ULONGLONG, VEC_FLOAT => :VEC_FLOAT,
                                            VEC_DOUBLE => :VEC_DOUBLE, VEC_CFLOAT => :VEC_CFLOAT, VEC_CDOUBLE => :VEC_CDOUBLE,
                                            VEC_STRING => :VEC_STRING, ARR_DBL_7 => :ARR_DBL_7, BOOL => :BOOL)
+
 const julia_types = Dict{Datatype,Type}(CHAR => CxxChar, UCHAR => CxxUChar, SHORT => CxxShort, INT => CxxInt, LONG => CxxLong,
                                         LONGLONG => CxxLongLong, USHORT => CxxUShort, UINT => CxxUInt, ULONG => CxxULong,
                                         ULONGLONG => CxxULongLong, FLOAT => CxxFloat, DOUBLE => CxxDouble,
@@ -90,6 +91,28 @@ const julia_types = Dict{Datatype,Type}(CHAR => CxxChar, UCHAR => CxxUChar, SHOR
                                         ARR_DBL_7 => SVector{7,CxxDouble}, BOOL => CxxBool)
 function julia_type(d::Datatype)
     T = get(julia_types, d, nothing)
+    T ≡ nothing && error("unknown Datatype $d")
+    return T
+end
+
+const abstract_julia_types = Dict{Datatype,Type}(CHAR => CxxChar, UCHAR => CxxUChar, SHORT => CxxShort, INT => CxxInt,
+                                                 LONG => CxxLong, LONGLONG => CxxLongLong, USHORT => CxxUShort, UINT => CxxUInt,
+                                                 ULONG => CxxULong, ULONGLONG => CxxULongLong, FLOAT => CxxFloat,
+                                                 DOUBLE => CxxDouble, CFLOAT => Complex{CxxFloat}, CDOUBLE => Complex{CxxDouble},
+                                                 STRING => AbstractString, VEC_CHAR => AbstractVector{CxxChar},
+                                                 VEC_UCHAR => AbstractVector{CxxUChar}, VEC_SHORT => AbstractVector{CxxShort},
+                                                 VEC_INT => AbstractVector{CxxInt}, VEC_LONG => AbstractVector{CxxLong},
+                                                 VEC_LONGLONG => AbstractVector{CxxLongLong},
+                                                 VEC_USHORT => AbstractVector{CxxUShort}, VEC_UINT => AbstractVector{CxxUInt},
+                                                 VEC_ULONG => AbstractVector{CxxULong},
+                                                 VEC_ULONGLONG => AbstractVector{CxxULongLong},
+                                                 VEC_FLOAT => AbstractVector{CxxFloat}, VEC_DOUBLE => AbstractVector{CxxDouble},
+                                                 VEC_CFLOAT => AbstractVector{Complex{CxxFloat}},
+                                                 VEC_CDOUBLE => AbstractVector{Complex{CxxDouble}},
+                                                 VEC_STRING => AbstractVector{<:AbstractString},
+                                                 ARR_DBL_7 => Union{NTuple{7,CxxDouble},SVector{7,CxxDouble}}, BOOL => CxxBool)
+function abstract_julia_type(d::Datatype)
+    T = get(abstract_julia_types, d, nothing)
     T ≡ nothing && error("unknown Datatype $d")
     return T
 end
@@ -108,23 +131,23 @@ openpmd_type(::Type{CxxFloat}) = FLOAT
 openpmd_type(::Type{CxxDouble}) = DOUBLE
 openpmd_type(::Type{Complex{CxxFloat}}) = CFLOAT
 openpmd_type(::Type{Complex{CxxDouble}}) = CDOUBLE
-openpmd_type(::Type{String}) = STRING
-openpmd_type(::Type{Vector{CxxChar}}) = VEC_CHAR
-openpmd_type(::Type{Vector{CxxUChar}}) = VEC_UCHAR
-openpmd_type(::Type{Vector{CxxShort}}) = VEC_SHORT
-openpmd_type(::Type{Vector{CxxInt}}) = VEC_INT
-openpmd_type(::Type{Vector{CxxLong}}) = VEC_LONG
-openpmd_type(::Type{Vector{CxxLongLong}}) = VEC_LONGLONG
-openpmd_type(::Type{Vector{CxxUShort}}) = VEC_USHORT
-openpmd_type(::Type{Vector{CxxUInt}}) = VEC_UINT
-openpmd_type(::Type{Vector{CxxULong}}) = VEC_ULONG
-openpmd_type(::Type{Vector{CxxULongLong}}) = VEC_ULONGLONG
-openpmd_type(::Type{Vector{CxxFloat}}) = VEC_FLOAT
-openpmd_type(::Type{Vector{CxxDouble}}) = VEC_DOUBLE
-openpmd_type(::Type{Vector{Complex{CxxFloat}}}) = VEC_CFLOAT
-openpmd_type(::Type{Vector{Complex{CxxDouble}}}) = VEC_CDOUBLE
-openpmd_type(::Type{Vector{String}}) = VEC_STRING
-openpmd_type(::Type{SVector{7,CxxDouble}}) = ARR_DBL_7
+openpmd_type(::Type{<:AbstractString}) = STRING
+openpmd_type(::Type{<:AbstractVector{CxxChar}}) = VEC_CHAR
+openpmd_type(::Type{<:AbstractVector{CxxUChar}}) = VEC_UCHAR
+openpmd_type(::Type{<:AbstractVector{CxxShort}}) = VEC_SHORT
+openpmd_type(::Type{<:AbstractVector{CxxInt}}) = VEC_INT
+openpmd_type(::Type{<:AbstractVector{CxxLong}}) = VEC_LONG
+openpmd_type(::Type{<:AbstractVector{CxxLongLong}}) = VEC_LONGLONG
+openpmd_type(::Type{<:AbstractVector{CxxUShort}}) = VEC_USHORT
+openpmd_type(::Type{<:AbstractVector{CxxUInt}}) = VEC_UINT
+openpmd_type(::Type{<:AbstractVector{CxxULong}}) = VEC_ULONG
+openpmd_type(::Type{<:AbstractVector{CxxULongLong}}) = VEC_ULONGLONG
+openpmd_type(::Type{<:AbstractVector{CxxFloat}}) = VEC_FLOAT
+openpmd_type(::Type{<:AbstractVector{CxxDouble}}) = VEC_DOUBLE
+openpmd_type(::Type{<:AbstractVector{Complex{CxxFloat}}}) = VEC_CFLOAT
+openpmd_type(::Type{<:AbstractVector{Complex{CxxDouble}}}) = VEC_CDOUBLE
+openpmd_type(::Type{<:AbstractVector{<:AbstractString}}) = VEC_STRING
+openpmd_type(::Type{<:Union{NTuple{7,CxxDouble},SVector{7,CxxDouble}}}) = ARR_DBL_7
 openpmd_type(::Type{CxxBool}) = BOOL
 
 """
@@ -144,9 +167,21 @@ const OpenPMDType = Union{CxxChar,CxxUChar,CxxShort,CxxInt,CxxLong,CxxLongLong,C
 export OpenPMDType
 
 """
+    AbstractOpenPMDType = Union{...}
+"""
+const AbstractOpenPMDType = Union{CxxChar,CxxUChar,CxxShort,CxxInt,CxxLong,CxxLongLong,CxxUShort,CxxUInt,CxxULong,CxxULongLong,
+                                  CxxFloat,CxxDouble,Complex{CxxFloat},Complex{CxxDouble},AbstractString,AbstractVector{CxxChar},
+                                  AbstractVector{CxxUChar},AbstractVector{CxxShort},AbstractVector{CxxInt},AbstractVector{CxxLong},
+                                  AbstractVector{CxxLongLong},AbstractVector{CxxUShort},AbstractVector{CxxUInt},
+                                  AbstractVector{CxxULong},AbstractVector{CxxULongLong},AbstractVector{CxxFloat},
+                                  AbstractVector{CxxDouble},AbstractVector{Complex{CxxFloat}},AbstractVector{Complex{CxxDouble}},
+                                  AbstractVector{<:AbstractString},Union{NTuple{7,CxxDouble},SVector{7,CxxDouble}},CxxBool}
+export AbstractOpenPMDType
+
+"""
     determine_datatype(::Type)::Datatype
 """
-determine_datatype(T::Type) = openpmd_type(T)
+determine_datatype(T::Type) = openpmd_type(T)::Datatype
 export determine_datatype
 
 """
@@ -164,19 +199,19 @@ export to_bits
 """
     is_vector(::Type)::Bool
 """
-is_vector(T::Type) = is_vector1(openpmd_type(T))
+is_vector(T::Type) = is_vector1(openpmd_type(T))::Bool
 export is_vector
 
 """
     is_floating_point(::Type)::Bool
 """
-is_floating_point(T::Type) = is_floating_point1(openpmd_type(T))
+is_floating_point(T::Type) = is_floating_point1(openpmd_type(T))::Bool
 export is_floating_point
 
 """
     is_complex_floating_point(::Type)::Bool
 """
-is_complex_floating_point(T::Type) = is_complex_floating_point1(openpmd_type(T))
+is_complex_floating_point(T::Type) = is_complex_floating_point1(openpmd_type(T))::Bool
 export is_complex_floating_point
 
 """
@@ -191,7 +226,7 @@ export is_integer
 """
     is_same(::Type, ::Type)::Bool
 """
-is_same(T1::Type, T2::Type) = is_same1(openpmd_type(T1), openpmd_type(T2))
+is_same(T1::Type, T2::Type) = is_same1(openpmd_type(T1), openpmd_type(T2))::Bool
 export is_same
 
 # """
@@ -215,25 +250,25 @@ export is_same
 """
     basic_datatype(::Type)::Type
 """
-basic_datatype(T::Type) = julia_type(basic_datatype1(openpmd_type(T)))
+basic_datatype(T::Type) = julia_type(basic_datatype1(openpmd_type(T)))::Type
 export basic_datatype
 
 """
     to_vector_type(::Type)::Type
 """
-to_vector_type(T::Type) = julia_type(to_vector_type1(openpmd_type(T)))
+to_vector_type(T::Type) = julia_type(to_vector_type1(openpmd_type(T)))::Type
 export to_vector_type
 
 """
     datatype_to_string(::Type)::AbstractString
 """
-datatype_to_string(T::Type) = datatype_to_string1(openpmd_type(T))
+datatype_to_string(T::Type) = datatype_to_string1(openpmd_type(T))::AbstractString
 export datatype_to_string
 
 """
-    string_to_datatype(str::AbstractString)::Type
+    string_to_datatype(str::AbstractString)::OpenPMDType
 """
-string_to_datatype(str::AbstractString) = julia_type(string_to_datatype1(str))
+string_to_datatype(str::AbstractString) = julia_type(string_to_datatype1(str))::Type
 export string_to_datatype
 
 """

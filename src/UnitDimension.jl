@@ -15,4 +15,4 @@ export UnitDimension, L, M, T, I, θ, N, J
 
 Base.convert(::Type{I}, d::UnitDimension) where {I<:Integer} = convert(I, reinterpret(UInt8, d))
 
-Base.hash(d::UnitDimension, u::UInt) = hash(hash(convert(UInt, d), u), UInt(0xe2ff8533))
+Base.hash(d::UnitDimension, u::UInt) = hash(hash(convert(UInt, d), u), UInt(0xe2ff8533))::UInt

@@ -24,13 +24,27 @@ __init__() = @initcxx
 #
 # - do we really need all the `@cxxdereference` macros? yes we do.
 #   maybe we need it only for explicitly declared functions and not
-#   for wrapped functions?
+#   for wrapped functions? apparently that's true.
 #
 # - remove all the `Bool(...)` wrappers; they are not needed
 #
 # - put enum values into a namespace
 #
-# - do we really need different names to call templated functions? probably not, at least not for constructors.
+# - do we really need different names to call templated functions?
+#   probably not, at least not for constructors. but we do need them
+#   if only the return type differs, e.g. for various `get<T>`
+#   functions. actually, yes we do, because this prevents CxxWrap's
+#   automatic type conversion.
+#
+# - we might need to care how types are mapped, i.e. whether we use a
+#   wrapped type directly, or a `CxxRef`, etc. this probably differs
+#   depending on the C++ type: those types that are essentially a
+#   `std::shared_ptr` should be wrapped directly, while those that are
+#   objects should be wrapped as `CxxRef`. or should we introduce the
+#   `std::shared_ptr` on the C++ side?
+#
+# - should `Vector{T}` in `OpenPMDTypes` be replaced by
+#   `StdVector{T}`?
 
 ################################################################################
 
