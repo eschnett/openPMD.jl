@@ -11,6 +11,11 @@ function test_Datatype()
             otype_equiv[ULONG] = ULONGLONG
             otype_equiv[VEC_LONG] = VEC_LONGLONG
             otype_equiv[VEC_ULONG] = VEC_ULONGLONG
+        elseif sizeof(CxxLong) == sizeof(CxxInt)
+            otype_equiv[LONG] = INT
+            otype_equiv[ULONG] = UINT
+            otype_equiv[VEC_LONG] = VEC_INT
+            otype_equiv[VEC_ULONG] = VEC_UINT
         end
         for otype in otypes
             @test otype isa Datatype
@@ -31,6 +36,11 @@ function test_Datatype()
             jtype_equiv[CxxULong] = CxxULongLong
             jtype_equiv[Vector{CxxLong}] = Vector{CxxLongLong}
             jtype_equiv[Vector{CxxULong}] = Vector{CxxULongLong}
+        elseif sizeof(CxxLong) == sizeof(CxxInt)
+            jtype_equiv[CxxLong] = CxxInt
+            jtype_equiv[CxxULong] = CxxUInt
+            jtype_equiv[Vector{CxxLong}] = Vector{CxxInt}
+            jtype_equiv[Vector{CxxULong}] = Vector{CxxUInt}
         end
         for jtype in jtypes
             @test jtype <: OpenPMDType
