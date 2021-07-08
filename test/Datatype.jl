@@ -73,9 +73,6 @@ function test_Datatype()
                 @test is_integer(jtype)[2] == (ejtype <: Signed)
             end
             for jtype′ in jtypes
-                if !(is_same(jtype′, jtype) == (jtype_equiv[jtype′] === jtype_equiv[jtype]))
-                    @show jtype′ jtype is_same(jtype′, jtype) jtype_equiv[jtype′] jtype_equiv[jtype] (jtype_equiv[jtype′] === jtype_equiv[jtype])
-                end
                 @test is_same(jtype′, jtype) == (jtype_equiv[jtype′] === jtype_equiv[jtype])
             end
             if jtype <: AbstractVector
