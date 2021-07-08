@@ -103,17 +103,26 @@ function test_ReadFile()
     T = eltype(comp)
     D = ndims(comp)
     sz = size(comp)
-    off = (0, 0)
     @test T ≡ Int
     @test D == 2
     @test sz == (2, 3)
     @test position(comp) == (0.0, 0.0)
 
-    data = Array{T}(undef, sz)
-    load_chunk(comp, data, off, sz)
+    chunks = available_chunks(comp)
+    @test chunks isa Vector{ChunkInfo{D}}
+    datas = Array{T,D}[]
+    for chunk in chunks
+        off = chunk.offset
+        ext = chunk.extent
+        data = Array{T}(undef, ext)
+        load_chunk(comp, data, off, ext)
+        push!(datas, data)
+    end
 
     close(iter)
 
-    @test data == Int[10i + j for i in 1:2, j in 1:3]
+    for data in datas
+        @test data == Int[10i + j for i in 1:2, j in 1:3]
+    end
 end
 test_ReadFile()

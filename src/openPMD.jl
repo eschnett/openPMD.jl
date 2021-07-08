@@ -63,6 +63,7 @@ wrap_vector(x) = x
 # the respective types, constants, and functions.
 
 include("Access.jl")
+include("ChunkInfo.jl")
 include("Datatype.jl")
 include("Format.jl")
 include("UnitDimension.jl")

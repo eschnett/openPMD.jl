@@ -26,5 +26,11 @@ Base.eltype(comp::BaseRecordComponent) = julia_type(cxx_get_datatype(comp.cxx_ob
 """
     isconstant(comp::BaseRecordComponent)::Bool
 """
-isconstant(comp::BaseRecordComponent) = is_constant(comp.cxx_object)
+isconstant(comp::BaseRecordComponent) = cxx_isconstant(comp.cxx_object)::Bool
 export isconstant
+
+"""
+    available_chunks(comp::BaseRecordComponent)::Vector{ChunkInfo{D}}
+"""
+available_chunks(comp::BaseRecordComponent) = ChunkInfo.(cxx_available_chunks(comp.cxx_object))::Vector{<:ChunkInfo}
+export available_chunks
