@@ -9,9 +9,11 @@ function test_version()
         @test vars["json"]
         exts = get_file_extensions()
         @test exts isa AbstractVector{<:AbstractString}
-        @test "bp" ∈ exts
+        # Only "json" is guaranteed to exist; the other formats depend
+        # on ADIOS2, which doesn't support 32-bit architectures
+        # @test "bp" ∈ exts
         @test "json" ∈ exts
-        @test "ssc" ∈ exts
-        @test "sst" ∈ exts
+        # @test "ssc" ∈ exts
+        # @test "sst" ∈ exts
     end
 end
