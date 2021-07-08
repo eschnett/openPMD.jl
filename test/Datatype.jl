@@ -66,9 +66,6 @@ function test_Datatype()
                 @test is_same(jtype′, jtype) == (jtype_equiv[jtype′] === jtype_equiv[jtype])
             end
             if jtype <: AbstractVector
-                if !(basic_datatype(jtype) === eltype(jtype))
-                    @show jtype basic_datatype(jtype) eltype(jtype)
-                end
                 @test basic_datatype(jtype) === eltype(jtype)
                 # @test to_vector_type(jtype) === jtype
             else
