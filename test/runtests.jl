@@ -39,10 +39,8 @@ include("Iteration.jl")
 
 include("Series.jl")
 
-#TODO tmpdir = Filesystem.mktempdir(; cleanup=true)
-tmpdir = Filesystem.mktempdir(; cleanup=false)
+tmpdir = Filesystem.mktempdir(; cleanup=true)
 filename = joinpath(tmpdir, "hello.json")
-println("[Creating output file \"$filename\"]...")
 
 function test_WriteFile()
     series = Series(filename, ACCESS_CREATE)
