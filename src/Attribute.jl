@@ -4,13 +4,6 @@
 
 # If we decide to make it visible, then it should be as `CxxRef{Attribute}`.
 
-@doc """
-    mutable struct Attribute
-        ...  
-    end
-""" Attribute
-# export Attribute
-
 @cxxdereference dtype(attr::CXX_Attribute) = julia_type(cxx_dtype(attr))::Type
 
 for (otype, jtype) in abstract_julia_types
@@ -20,10 +13,5 @@ for (otype, jtype) in abstract_julia_types
         end
     end
 end
-
-@doc """
-    getindex(attr::Attribute)
-    attr[]
-""" Base.getindex
 
 @cxxdereference Base.getindex(attr::CXX_Attribute) = attr[dtype(attr)]::AbstractOpenPMDType

@@ -15,16 +15,31 @@ function main(filename::AbstractString)
     T = eltype(comp)
     D = ndims(comp)
     sz = size(comp)
-    off = (0, 0)
+    pos = position(comp)
     println("type: ", T)
     println("ndims: ", D)
     println("size: ", sz)
-    println("position: ", position(comp))
+    println("position: ", pos)
 
-    data = Array{T}(undef, sz)
-    load_chunk(comp, data, off, sz)
+    chunks = available_chunks(comp)
+    datas = Array{T,D}[]
+    for chunk in chunks
+        off = chunk.offset
+        ext = chunk.extent
+        data = Array{T}(undef, ext)
+        load_chunk(comp, data, off, ext)
+        push!(datas, data)
+    end
 
     close(iter)
+
+    for (chunk, data) in zip(chunks, datas)
+        println("Chunk:")
+        println("    offset: ", chunk.offset)
+        println("    extent: ", chunk.extent)
+        println("    minimum: ", minimum(data))
+        println("    maximum: ", maximum(data))
+    end
 
     return
 end

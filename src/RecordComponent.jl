@@ -37,9 +37,10 @@ Base.ndims(comp::RecordComponent) = Int(cxx_get_dimensionality(comp.cxx_object))
 """
 Base.size(comp::RecordComponent) = reverse(Int.(Tuple(cxx_get_extent(comp.cxx_object))))
 
-@doc """
+"""
     make_constant(comp::RecordComponent, value::OpenMPType)
-""" make_constant
+"""
+function make_constant end
 export make_constant
 for (otype, jtype) in julia_types
     @eval begin

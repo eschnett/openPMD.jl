@@ -30,4 +30,4 @@ end
 
 filename = "hello.json"
 main(filename)
-run(`/Users/eschnett/Cactus/view/bin/openpmd-ls $filename`)
+# run(`/Users/eschnett/Cactus/view/bin/openpmd-ls $filename`)

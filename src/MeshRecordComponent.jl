@@ -27,9 +27,10 @@ end
 set_position!(comp::MeshRecordComponent, newpos::NTuple{D,CxxDouble} where {D}) = set_position!(comp, CxxDouble[newpos...])
 export set_position!
 
-@doc """
+"""
     make_constant(comp::MeshRecordComponent, value::OpenMPType)
-""" make_constant
+"""
+function make_constant end
 export make_constant
 for (otype, jtype) in julia_types
     @eval begin
