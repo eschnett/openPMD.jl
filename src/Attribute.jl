@@ -11,11 +11,13 @@
 """ Attribute
 # export Attribute
 
-@cxxdereference dtype(attr::Attribute) = julia_type(dtype1(attr))::Type
+@cxxdereference dtype(attr::CXX_Attribute) = julia_type(cxx_dtype(attr))::Type
 
 for (otype, jtype) in abstract_julia_types
     @eval begin
-        @cxxdereference Base.getindex(attr::Attribute, ::Type{<:$jtype}) = $(Symbol("get1_", type_symbols[otype]))(attr)::$jtype
+        @cxxdereference function Base.getindex(attr::CXX_Attribute, ::Type{<:$jtype})
+            return $(Symbol("cxx_get_", type_symbols[otype]))(attr)::$jtype
+        end
     end
 end
 
@@ -24,4 +26,4 @@ end
     attr[]
 """ Base.getindex
 
-@cxxdereference Base.getindex(attr::Attribute) = getindex(attr, dtype(attr))::AbstractOpenPMDType
+@cxxdereference Base.getindex(attr::CXX_Attribute) = attr[dtype(attr)]::AbstractOpenPMDType

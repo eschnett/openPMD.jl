@@ -2,16 +2,17 @@
 
 @doc """
     @enum UnitDimension begin
-        L    # length
-        M    # mass
-        T    # time
-        I    # electric current
-        θ    # thermodynamic temperature
-        N    # amount of substance
-        J    # luminous intensity
+        UNITDIMENSION_L    # length
+        UNITDIMENSION_M    # mass
+        UNITDIMENSION_T    # time
+        UNITDIMENSION_I    # electric current
+        UNITDIMENSION_θ    # thermodynamic temperature
+        UNITDIMENSION_N    # amount of substance
+        UNITDIMENSION_J    # luminous intensity
     end
 """ UnitDimension
-export UnitDimension, L, M, T, I, θ, N, J
+export UnitDimension, UNITDIMENSION_L, UNITDIMENSION_M, UNITDIMENSION_T, UNITDIMENSION_I, UNITDIMENSION_θ, UNITDIMENSION_N,
+       UNITDIMENSION_J
 
 Base.convert(::Type{I}, d::UnitDimension) where {I<:Integer} = convert(I, reinterpret(UInt8, d))
 

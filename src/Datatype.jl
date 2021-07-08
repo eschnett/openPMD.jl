@@ -54,13 +54,13 @@ Base.hash(b::CxxBool, u::UInt) = hash(hash(Bool(b), u), UInt(0x4c87662d))
 # We cannot use this definition for equality. It leads to `LONG` ==
 # `LONGLONG` on some systems.
 
-# Base.:(==)(d::Datatype, e::Datatype) = is_same1(d, e)
+# Base.:(==)(d::Datatype, e::Datatype) = cxx_is_same(d, e)
 # function Base.hash(d::Datatype, h::UInt)
-#     isvec = is_vector1(d)
-#     isint, issig = is_integer1(d)
-#     isfp = is_floating_point1(d)
-#     iscfp = is_complex_floating_point1(d)
-#     bits = to_bits1(d)
+#     isvec = cxx_is_vector(d)
+#     isint, issig = cxx_is_integer(d)
+#     isfp = cxx_is_floating_point(d)
+#     iscfp = cxx_is_complex_floating_point(d)
+#     bits = cxx_to_bits(d)
 #     return hash(0x6b224312, hash(isvec, hash(isint, hash(issig, hash(isfp, hash(iscfp, hash(bits, h)))))))
 # end
 
@@ -187,31 +187,31 @@ export determine_datatype
 """
     to_bytes(::Type)::Int
 """
-to_bytes(T::Type) = Int(to_bytes1(openpmd_type(T)))
+to_bytes(T::Type) = Int(cxx_to_bytes(openpmd_type(T)))
 export to_bytes
 
 """
     to_bits(::Type)::Int
 """
-to_bits(T::Type) = Int(to_bits1(openpmd_type(T)))
+to_bits(T::Type) = Int(cxx_to_bits(openpmd_type(T)))
 export to_bits
 
 """
     is_vector(::Type)::Bool
 """
-is_vector(T::Type) = is_vector1(openpmd_type(T))::Bool
+is_vector(T::Type) = cxx_is_vector(openpmd_type(T))::Bool
 export is_vector
 
 """
     is_floating_point(::Type)::Bool
 """
-is_floating_point(T::Type) = is_floating_point1(openpmd_type(T))::Bool
+is_floating_point(T::Type) = cxx_is_floating_point(openpmd_type(T))::Bool
 export is_floating_point
 
 """
     is_complex_floating_point(::Type)::Bool
 """
-is_complex_floating_point(T::Type) = is_complex_floating_point1(openpmd_type(T))::Bool
+is_complex_floating_point(T::Type) = cxx_is_complex_floating_point(openpmd_type(T))::Bool
 export is_complex_floating_point
 
 """
@@ -220,13 +220,13 @@ export is_complex_floating_point
 Whether the type is an integer (first tuple element), and if so,
 whether it is signed (second tuple element).
 """
-is_integer(T::Type) = Tuple{Bool,Bool}(is_integer1(openpmd_type(T)))
+is_integer(T::Type) = Tuple{Bool,Bool}(cxx_is_integer(openpmd_type(T)))
 export is_integer
 
 """
     is_same(::Type, ::Type)::Bool
 """
-is_same(T1::Type, T2::Type) = is_same1(openpmd_type(T1), openpmd_type(T2))::Bool
+is_same(T1::Type, T2::Type) = cxx_is_same(openpmd_type(T1), openpmd_type(T2))::Bool
 export is_same
 
 # """
@@ -250,31 +250,31 @@ export is_same
 """
     basic_datatype(::Type)::Type
 """
-basic_datatype(T::Type) = julia_type(basic_datatype1(openpmd_type(T)))::Type
+basic_datatype(T::Type) = julia_type(cxx_basic_datatype(openpmd_type(T)))::Type
 export basic_datatype
 
 """
     to_vector_type(::Type)::Type
 """
-to_vector_type(T::Type) = julia_type(to_vector_type1(openpmd_type(T)))::Type
+to_vector_type(T::Type) = julia_type(cxx_to_vector_type(openpmd_type(T)))::Type
 export to_vector_type
 
 """
     datatype_to_string(::Type)::AbstractString
 """
-datatype_to_string(T::Type) = datatype_to_string1(openpmd_type(T))::AbstractString
+datatype_to_string(T::Type) = cxx_datatype_to_string(openpmd_type(T))::AbstractString
 export datatype_to_string
 
 """
     string_to_datatype(str::AbstractString)::OpenPMDType
 """
-string_to_datatype(str::AbstractString) = julia_type(string_to_datatype1(str))::Type
+string_to_datatype(str::AbstractString) = julia_type(cxx_string_to_datatype(str))::Type
 export string_to_datatype
 
 """
     warn_wrong_dtype(key::AbstractString, ::Type{Store}, ::Type{Request}) where {Store,Request}
 """
-function warn_wrong_dtype1(key::AbstractString, ::Type{Store}, ::Type{Request}) where {Store,Request}
-    return warn_wrong_dtype(key, openpmd_type(Store), openpmd_type(Request))
+function warn_wrong_dtype(key::AbstractString, ::Type{Store}, ::Type{Request}) where {Store,Request}
+    return cxx_warn_wrong_dtype(key, openpmd_type(Store), openpmd_type(Request))
 end
 export warn_wrong_dtype

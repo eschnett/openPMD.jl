@@ -1,28 +1,30 @@
 # BaseRecordComponent
 
-@doc """
+"""
    abstract type BaseRecordComponent <: Attributable end
-""" BaseRecordComponent
+"""
+abstract type BaseRecordComponent <: Attributable end
 export BaseRecordComponent
 
-@doc """
+"""
     unit_SI(comp::BaseRecordComponent)::CxxDouble
-""" unit_SI
+"""
+unit_SI(comp::BaseRecordComponent) = cxx_unit_SI(comp.cxx_object)::CxxDouble
 export unit_SI
 
-@doc """
+"""
     reset_datatype!(comp::BaseRecordComponent, T::Type)
-""" reset_datatype!
+"""
+reset_datatype!(comp::BaseRecordComponent, T::Type) = cxx_reset_datatype!(comp.cxx_object, openpmd_type(T))
 export reset_datatype!
-@cxxdereference reset_datatype!(comp::BaseRecordComponent, T::Type) = reset_datatype1!(comp, openpmd_type(T))
 
-@doc """
-    get_datatype(comp::BaseRecordComponent)::Type
-""" get_datatype
-export get_datatype
-@cxxdereference get_datatype(comp::BaseRecordComponent) = julia_type(get_datatype1(comp))
+"""
+    eltype(comp::BaseRecordComponent)::Type
+"""
+Base.eltype(comp::BaseRecordComponent) = julia_type(cxx_get_datatype(comp.cxx_object))
 
-@doc """
-    is_constant(comp::BaseRecordComponent)::Bool
-""" is_constant
-export is_constant
+"""
+    isconstant(comp::BaseRecordComponent)::Bool
+"""
+isconstant(comp::BaseRecordComponent) = is_constant(comp.cxx_object)
+export isconstant

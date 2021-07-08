@@ -1,13 +1,19 @@
-@testset "Dataset" begin
-    @test Extent isa Type
-    @test Offset isa Type
-    @test Dataset isa Type
+function test_Dataset()
+    @testset "Dataset" begin
+        @test Extent isa Type
+        @test Offset isa Type
+        @test Dataset isa Type
 
-    @test dset isa Dataset
+        data = Int[10i + j for i in 1:2, j in 1:3]
+        T = eltype(data)
+        off = (0, 0)
+        sz = size(data)
+        dset = Dataset(T, sz)
 
-    @test size(dset) == ext
-    @test eltype(dset) == dsetT
-    @test ndims(dset) == length(ext)
+        @test size(dset) == sz
+        @test eltype(dset) == T
+        @test ndims(dset) == length(sz)
 
-    # TODO: test chunk_size, compression, transform, options
+        # TODO: test chunk_size, compression, transform, options
+    end
 end

@@ -45,22 +45,21 @@ Dataset(extent::Extent) = Dataset(wrap_extent(extent))
 # for (otype, jtype) in julia_types
 #     @eval begin
 #         @cxxdereference function Dataset(::Type{$jtype}, extent::Extent, options::AbstractString="{}")
-#             return Dataset1($otype, wrap_extent(extent), options)
+#             return Dataset($otype, wrap_extent(extent), options)
 #         end
 #     end
 # end
 
-@doc """
+"""
     extend!(dset::Dataset, newextent::Extent)
-""" extend!
+"""
+@cxxdereference extend!(dset::Dataset, newextent::Extent) = cxx_extend!(dset, wrap_extent(newextent))
 export extend!
-extend!(dset::Dataset, newextent::Extent) = extend1!(dset, wrap_extent(newextent))
 
-@doc """
+"""
     set_chunk_size!(dset::Dataset, chunk_size::Extent)
-""" set_chunk_size!
-export set_chunk_size!
-set_chunk_size!(dset::Dataset, chunk_size::Extent) = set_chunk_size1!(dset, wrap_extent(chunk_size))
+"""
+@cxxdereference set_chunk_size!(dset::Dataset, chunk_size::Extent) = cxx_set_chunk_size!(dset, wrap_extent(chunk_size))
 
 @doc """
     set_compression!(dset::Dataset, compression::AbstractString, level::Int)
@@ -75,22 +74,22 @@ export set_custom_transform!
 """
     size(dset::Dataset)
 """
-Base.size(dset::Dataset) = reverse(Int.(Tuple(extent1(dset))))
+@cxxdereference Base.size(dset::Dataset) = reverse(Int.(Tuple(cxx_extent(dset))))
 
 """
     eltype(dset::Dataset)
 """
-Base.eltype(dset::Dataset) = julia_type(dtype1(dset))
+@cxxdereference Base.eltype(dset::Dataset) = julia_type(cxx_dtype(dset))
 
 """
     ndims(dset::Dataset)
 """
-Base.ndims(dset::Dataset) = Int(rank1(dset))
+@cxxdereference Base.ndims(dset::Dataset) = Int(cxx_rank(dset))
 
 """
     chunk_size(dset::Dataset)
 """
-chunk_size(dset::Dataset) = reverse(Int.(Tuple(chunk_size1(dset))))
+@cxxdereference chunk_size(dset::Dataset) = reverse(Int.(Tuple(cxx_chunk_size(dset))))
 export chunk_size
 
 @doc """

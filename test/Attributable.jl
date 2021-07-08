@@ -1,25 +1,23 @@
-@testset "Attributable" begin
-    @test Attributable isa Type
-    @test isabstracttype(Attributable)
+function test_Attributable(attr::Attributable)
+    @testset "Attributable ($(typeof(attr)))" begin
+        @test Attributable isa Type
+        @test isabstracttype(Attributable)
 
-    obj = series
-    @test obj isa Attributable
-    set_attribute!(obj, "hello", 42)
-    set_attribute!(obj, "world", [float(π)])
-    @test get_attribute(obj, "hello") === 42
-    @show get_attribute(obj, "world")
-    @show typeof(get_attribute(obj, "world"))
-    @test get_attribute(obj, "world") == [float(π)]
-    # Not all backends support deleting attributes
-    # delete_attribute!(obj, "hello")
-    # @test !contains_attribute(obj, "hello")
-    @test contains_attribute(obj, "world")
-    @test "world" ∈ attributes(obj)
-    @test num_attributes(obj) ≥ 1
+        set_attribute!(attr, "hello", 42)
+        set_attribute!(attr, "world", [float(π)])
+        @test get_attribute(attr, "hello") === 42
+        @test get_attribute(attr, "world") == [float(π)]
+        # Not all backends support deleting attributes
+        # delete_attribute!(attr, "hello")
+        # @test !contains_attribute(attr, "hello")
+        @test contains_attribute(attr, "world")
+        @test "world" ∈ attributes(attr)
+        @test num_attributes(attr) ≥ 1
 
-    set_comment!(obj, "abc αβγ")
-    @test comment(obj) == "abc αβγ"
+        set_comment!(attr, "abc αβγ")
+        @test comment(attr) == "abc αβγ"
 
-    # Don't flush or close anything until the end of the test
-    # series_flush(obj)
+        # Don't flush or close anything until the end of the test
+        # series_flush(attr)
+    end
 end

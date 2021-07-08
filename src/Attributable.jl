@@ -1,86 +1,72 @@
 # Attributable
 
-@doc """
+"""
     abstract type Attributable end
-""" Attributable
+"""
+abstract type Attributable end
 export Attributable
 
-# We cannot use `setindex!` and `getindex` for `Attributable` types
-# because the concrete types might implement their own `setindex!` and
-# `getindex`, which would make attributes inaccessible.
-#
-# @doc """
-#     setindex!(attr::Attributeable, key::AbstractString, value::OpenPMDType)
-#     attr[key] = value
-# """ Base.setindex!
-# for (otype, jtype) in julia_types
-#     @eval begin
-#         Base.setindex!(attr::Attributable, value::$jtype, key::AbstractString) = set_attribute1!(attr, key, value)
-#     end
-# end
-# 
-# @doc """
-#     getindex(attr::Attributable, key::AbstractString)::OpenPMDType
-#     attr[key]::Attribute
-# """ Base.getindex
-# Base.getindex(attr::Attributable, key::AbstractString) = get_attribute1(attr, key)[]
-# 
-# @doc """
-#     delete!(attr:Attributable, key::AbstractString)
-# """ Base.delete!
-# Base.delete!(attr::Attributable, key::AbstractString) = (delete_attribute1(attr, key); attr)
-
-@doc """
-    set_attribute!(attr::Attributeable, key::AbstractString, value::OpenPMDType)
-""" set_attribute!
+"""
+    set_attribute!(attr::Attributable, key::AbstractString, value::OpenPMDType)
+"""
+function set_attribute!(attr::Attributable, key::AbstractString, value::OpenPMDType)
+    cxx_set_attribute!(attr.cxx_object, key, value)
+    return attr
+end
 export set_attribute!
 for (otype, jtype) in julia_types
     @eval begin
-        @cxxdereference function set_attribute!(attr::Attributable, key::AbstractString, value::$jtype)
-            $(Symbol("set_attribute1_", type_symbols[otype], "!"))(attr, key, wrap_vector(value))
+        @cxxdereference function cxx_set_attribute!(attr::CXX_Attributable, key::AbstractString, value::$jtype)
+            $(Symbol("cxx_set_attribute_", type_symbols[otype], "!"))(attr, key, wrap_vector(value))
             return attr
         end
     end
 end
 
-@doc """
+"""
     get_attribute(attr::Attributable, key::AbstractString)::OpenPMDType
-""" get_attribute
+"""
+get_attribute(attr::Attributable, key::AbstractString) = cxx_get_attribute(attr.cxx_object, key)[]
 export get_attribute
-@cxxdereference get_attribute(attr::Attributable, key::AbstractString) = get_attribute1(attr, key)[]
 
-@doc """
-    delete_attribute!(attr:Attributable, key::AbstractString)
-""" delete_attribute!
+"""
+    delete_attribute!(attr::Attributable, key::AbstractString)
+"""
+delete_attribute!(attr::Attributable, key::AbstractString) = cxx_delete_attribute!(attr.cxx_object, key)
 export delete_attribute!
 
-@doc """
-    attributes(attr:Attributable)::AbstractVector{<:AbstractString}
-""" attributes
+"""
+    attributes(attr::Attributable)::AbstractVector{<:AbstractString}
+"""
+attributes(attr::Attributable) = cxx_attributes(attr.cxx_object)::AbstractVector{<:AbstractString}
 export attributes
 
-@doc """
-    num_attributes(attr:Attributable)::Int
-""" num_attributes
+"""
+    num_attributes(attr::Attributable)::Int
+"""
+num_attributes(attr::Attributable) = Int(cxx_num_attributes(attr.cxx_object))
 export num_attributes
-@cxxdereference num_attributes(attr::Attributable) = Int(num_attributes1(attr))
 
-@doc """
-    contains_attribute(attr:Attributable, key::AbstractString)::Bool
-""" contains_attribute
+"""
+    contains_attribute(attr::Attributable, key::AbstractString)::Bool
+"""
+contains_attribute(attr::Attributable, key::AbstractString) = cxx_contains_attribute(attr.cxx_object, key)::Bool
 export contains_attribute
 
-@doc """
+"""
     comment(attr::Attributable)::AbstractString
-""" comment
+"""
+comment(attr::Attributable) = cxx_comment(attr.cxx_object)::AbstractString
 export comment
 
-@doc """
-    set_comment!(attr::Attributable, comment::AbstractString)::Attributable
-""" set_comment!
+"""
+    set_comment!(attr::Attributable, comment::AbstractString)
+"""
+set_comment!(attr::Attributable, comment::AbstractString) = cxx_set_comment!(attr.cxx_object, comment)
 export set_comment!
 
-@doc """
+"""
     series_flush(attr::Attributable)
-""" series_flush
+"""
+series_flush(attr::Attributable) = cxx_series_flush(attr.cxx_object)
 export series_flush

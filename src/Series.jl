@@ -1,159 +1,212 @@
 # Series
 
-@doc """
+"""
     mutable struct Series <: Attributable
         ...
     end
     Series()
     Series(filepath::AbstractString, access::Access, comm::MPI_Comm, options::AbstractString="{}")
     Series(filepath::AbstractString, access::Access, options::AbstractString="{}")
-""" Series
+"""
+mutable struct Series <: AbstractSeries
+    cxx_object::CXX_Series
+    buffers::Vector
+    Series(cxx_series::CXX_Series) = new(cxx_series, [])
+end
+Series(filepath::AbstractString, access::Access, options::AbstractString="{}") = Series(CXX_Series(filepath, access, options))
 export Series
 
-@doc """
+mark_buffer!(series::Series, buffer) = push!(series.buffers, buffer)
+release_buffers!(series::Series) = empty!(series.buffers)
+
+"""
     openPMD_version(series::Series)::AbstractString
-""" openPMD_version
+"""
+openPMD_version(series::Series) = cxx_openPMD_version(series.cxx_object)::AbstractString
 export openPMD_version
 
-@doc """
+"""
     set_openPMD_version!(series::Series, version::AbstractString)
-""" set_openPMD_version!
+"""
+set_openPMD_version!(series::Series, version::AbstractString) = cxx_set_openPMD_version!(series.cxx_object, version)
 export set_openPMD_version!
 
-@doc """
-    openPMD_extension(series::Series)::AbstractString
-""" openPMD_extension
+"""
+    openPMD_extension(series::Series)::UInt32
+"""
+openPMD_extension(series::Series) = cxx_openPMD_extension(series.cxx_object)::UInt32
 export openPMD_extension
 
-@doc """
+"""
     set_openPMD_extension!(series::Series, extension::AbstractString)
-""" set_openPMD_extension!
+"""
+set_openPMD_extension!(series::Series, extension::UInt32) = cxx_set_openPMD_extension!(series.cxx_object, extension)
 export set_openPMD_extension!
 
-@doc """
+"""
     base_path(series::Series)::AbstractString
-""" base_path
+"""
+base_path(series::Series) = cxx_base_path(series.cxx_object)::AbstractString
 export base_path
 
-@doc """
+"""
     set_base_path!(series::Series, path::AbstractString)
-""" set_base_path!
+"""
+set_base_path!(series::Series, path::AbstractString) = cxx_set_base_path!(series.cxx_object, path)
 export set_base_path!
 
-@doc """
+"""
     meshes_path(series::Series)::AbstractString
-""" meshes_path
+"""
+meshes_path(series::Series) = cxx_meshes_path(series.cxx_object)::AbstractString
 export meshes_path
 
-@doc """
+"""
     set_meshes_path!(series::Series, path::AbstractString)
-""" set_meshes_path!
+"""
+set_meshes_path!(series::Series, path::AbstractString) = cxx_set_meshes_path!(series.cxx_object, path)
 export set_meshes_path!
 
-@doc """
+"""
     particles_path(series::Series)::AbstractString
-""" particles_path
+"""
+particles_path(series::Series) = cxx_particles_path(series.cxx_object)::AbstractString
 export particles_path
 
-@doc """
+"""
     set_particles_path!(series::Series, path::AbstractString)
-""" set_particles_path!
+"""
+set_particles_path!(series::Series, path::AbstractString) = cxx_set_particles_path!(series.cxx_object, path)
 export set_particles_path!
 
-@doc """
+"""
     author(series::Series)::AbstractString
-""" author
+"""
+author(series::Series) = cxx_author(series.cxx_object)::AbstractString
 export author
 
-@doc """
+"""
     set_author!(series::Series, author::AbstractString)
-""" set_author!
+"""
+set_author!(series::Series, author::AbstractString) = cxx_set_author!(series.cxx_object, author)
 export set_author!
 
-@doc """
+"""
     software(series::Series)::AbstractString
-""" software
+"""
+software(series::Series) = cxx_software(series.cxx_object)::AbstractString
 export software
 
-@doc """
+"""
     set_software!(series::Series, software::AbstractString, version::AbstractString="unspecified")
-""" set_software!
+"""
+function set_software!(series::Series, software::AbstractString, version::AbstractString="unspecified")
+    return cxx_set_software!(series.cxx_object, software, version)
+end
 export set_software!
 
-@doc """
+"""
     software_version(series::Series)::AbstractString
-""" software_version
+"""
+software_version(series::Series) = cxx_software_version(series.cxx_object)::AbstractString
 export software_version
 
-@doc """
+"""
     date(series::Series)::AbstractString
-""" date
+"""
+date(series::Series) = cxx_date(series.cxx_object)::AbstractString
 export date
 
-@doc """
+"""
     set_date!(series::Series, date::AbstractString)
-""" set_date!
+"""
+set_date!(series::Series, date::AbstractString) = cxx_set_date!(series.cxx_object, date)
 export set_date!
 
-@doc """
+"""
     software_dependencies(series::Series)::AbstractString
-""" software_dependencies
+"""
+software_dependencies(series::Series) = cxx_software_dependencies(series.cxx_object)::AbstractString
 export software_dependencies
 
-@doc """
+"""
     set_software_dependencies!(series::Series, dependencies::AbstractString)
-""" set_software_dependencies!
+"""
+function set_software_dependencies!(series::Series, dependencies::AbstractString)
+    return cxx_set_software_dependencies!(series.cxx_object, dependencies)
+end
 export set_software_dependencies!
 
-@doc """
+"""
     machine(series::Series)::AbstractString
-""" machine
+"""
+machine(series::Series) = cxx_machine(series.cxx_object)::AbstractString
 export machine
 
-@doc """
+"""
     set_machine!(series::Series, machine::AbstractString)
-""" set_machine!
+"""
+set_machine!(series::Series, machine::AbstractString) = cxx_set_machine!(series.cxx_object, machine)
 export set_machine!
 
 # TODO: type.method("iteration_encoding", &SeriesImpl::iterationEncoding);
 # TODO: type.method("set_iteration_encoding!", &SeriesImpl::setIterationEncoding);
 
-@doc """
+"""
     iteration_format(series::Series)::AbstractString
-""" iteration_format
+"""
+iteration_format(series::Series) = cxx_iteration_format(series.cxx_object)::AbstractString
 export iteration_format
 
-@doc """
+"""
     set_iteration_format!(series::Series, format::AbstractString)
-""" set_iteration_format!
+"""
+set_iteration_format!(series::Series, format::AbstractString) = cxx_set_iteration_format!(series.cxx_object, format)
 export set_iteration_format!
 
-@doc """
+"""
     name(series::Series)::AbstractString
-""" name
+"""
+name(series::Series) = cxx_name(series.cxx_object)::AbstractString
 export name
 
-@doc """
+"""
     set_name!(series::Series, name::AbstractString)
-""" set_name!
+"""
+set_name!(series::Series, name::AbstractString) = cxx_set_name!(series.cxx_object, name)
 export set_name!
 
-@doc """
+"""
     backend(series::Series)::AbstractString
-""" backend
+"""
+backend(series::Series) = cxx_backend(series.cxx_object)::AbstractString
 export backend
 
-@doc """
+"""
     flush(series::Series)::AbstractString
-""" Base.flush
-@cxxdereference Base.flush(series::SeriesImpl) = flush1(series)
+"""
+function Base.flush(series::Series)
+    cxx_flush(series.cxx_object)
+    return empty!(series.buffers)
+end
 
-@doc """
-    isvalid(series::Series)
-""" Base.isvalid
-@cxxdereference Base.isvalid(series::Series) = isvalid1(series)
+"""
+    isvalid(series::Series)::Bool
+"""
+Base.isvalid(series::Series) = cxx_isvalid(series.cxx_object)::Bool
 
-@doc """
-    write_iterations(series::Series)
-""" write_iterations
-export write_iterations
+# @doc """
+#     iterations(series::Series)
+# """ iterations
+# export iterations
+
+"""
+    get_iteration(series::Series, idx::Int)::Iteration
+"""
+get_iteration(series::Series, idx::Int) = Iteration(cxx_iterations(series.cxx_object)[UInt64(idx)], series)
+export get_iteration
+
+# @doc """
+#     write_iterations(series::Series)
+# """ write_iterations
+# export write_iterations

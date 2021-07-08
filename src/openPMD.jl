@@ -1,5 +1,9 @@
 module openPMD
 
+module A
+const B = 1
+end
+
 using CxxWrap
 using StaticArrays
 
@@ -67,6 +71,9 @@ include("Attribute.jl")
 include("Attributable.jl")
 include("Dataset.jl")
 
+abstract type AbstractIteration <: Attributable end
+abstract type AbstractSeries <: Attributable end
+
 include("Container.jl")
 
 include("BaseRecordComponent.jl")
@@ -82,5 +89,7 @@ include("WriteIterations.jl")
 include("Series.jl")
 
 include("version.jl")
+
+include("RecordComponent_Chunks.jl")
 
 end

@@ -5,7 +5,7 @@
         ...
    end
 """ WriteIterations
-export WriteIterations
+# export WriteIterations
 
 @doc """
     getindex(iters::WriteIterations, key)::Iteration

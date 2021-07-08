@@ -1,15 +1,17 @@
-@testset "UnitDimension" begin
-    @test UnitDimension isa Type
-    @test L isa UnitDimension
-    @test M isa UnitDimension
-    @test T isa UnitDimension
-    @test I isa UnitDimension
-    @test θ isa UnitDimension
-    @test N isa UnitDimension
-    @test J isa UnitDimension
+function test_UnitDimension()
+    @testset "UnitDimension" begin
+        @test UnitDimension isa Type
+        @test UNITDIMENSION_L isa UnitDimension
+        @test UNITDIMENSION_M isa UnitDimension
+        @test UNITDIMENSION_T isa UnitDimension
+        @test UNITDIMENSION_I isa UnitDimension
+        @test UNITDIMENSION_θ isa UnitDimension
+        @test UNITDIMENSION_N isa UnitDimension
+        @test UNITDIMENSION_J isa UnitDimension
 
-    @test L == L
-    @test L ≠ M
-    @test hash(L) isa UInt
-    @test hash(L) ≠ hash(convert(UInt, L))
+        @test UNITDIMENSION_L == UNITDIMENSION_L
+        @test UNITDIMENSION_L ≠ UNITDIMENSION_M
+        @test hash(UNITDIMENSION_L) isa UInt
+        @test hash(UNITDIMENSION_L) ≠ hash(convert(UInt, UNITDIMENSION_L))
+    end
 end

@@ -1,26 +1,31 @@
 # MeshRecordComponent
 
-@doc """
+"""
     mutable struct MeshRecordComponent <: RecordComponent
         ...
     end
 
 This holds (a pointer to) a C++ MeshRecordComponent.
-""" MeshRecordComponent
-const MeshRecordComponent = CxxRef{MeshRecordComponent1}
+"""
+struct MeshRecordComponent <: RecordComponent
+    cxx_object::CxxRef{CXX_MeshRecordComponent}
+    iteration::AbstractIteration
+end
 export MeshRecordComponent
 
-@doc """
-    position(comp::MeshRecordComponent)::AbstractVector{CxxDouble}
-""" Base.position
-Base.position(comp::MeshRecordComponent) = position1(comp[])
+"""
+    position(comp::MeshRecordComponent)::NTuple{D,CxxDouble}
+"""
+Base.position(comp::MeshRecordComponent) = Int.(Tuple(cxx_position(comp.cxx_object)))
 
-@doc """
+"""
     set_position!(comp::MeshRecordComponent, newpos::Union{NTuple{D,CxxDouble}, AbstractVector{CxxDouble}})
-""" set_position!
-export set_position!
-set_position!(comp::MeshRecordComponent, newpos::AbstractVector{CxxDouble}) = set_position1!(comp[], wrap_vector(newpos))
+"""
+function set_position!(comp::MeshRecordComponent, newpos::AbstractVector{CxxDouble})
+    return cxx_set_position!(comp.cxx_object, wrap_vector(newpos))
+end
 set_position!(comp::MeshRecordComponent, newpos::NTuple{D,CxxDouble} where {D}) = set_position!(comp, CxxDouble[newpos...])
+export set_position!
 
 @doc """
     make_constant(comp::MeshRecordComponent, value::OpenMPType)
@@ -29,7 +34,7 @@ export make_constant
 for (otype, jtype) in julia_types
     @eval begin
         function make_constant(comp::MeshRecordComponent, value::$jtype)
-            return $(Symbol("make_constant1_", type_symbols[otype]))(comp[], value)
+            return $(Symbol("cxx_make_constant_", type_symbols[otype]))(comp.cxx_object, value)
         end
     end
 end
