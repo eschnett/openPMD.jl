@@ -1,18 +1,21 @@
 # version
 
-@doc """
+"""
     get_version()::AbstractString
-""" get_version
+"""
+function get_version end
 export get_version
 
-@doc """
+"""
     get_standard()::AbstractString
-""" get_standard
+"""
+function get_standard end
 export get_standard
 
-@doc """
+"""
     get_standard_minimum()::AbstractString
-""" get_standard_minimum
+"""
+function get_standard_minimum end
 export get_standard_minimum
 
 """
@@ -28,7 +31,8 @@ function get_variants()
 end
 export get_variants
 
-@doc """
+"""
     get_file_extensions()::AbstractVector{<:AbstractString}
-""" get_file_extensions
+"""
+function get_file_extensions end
 export get_file_extensions
