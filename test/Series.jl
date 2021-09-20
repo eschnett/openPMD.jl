@@ -41,9 +41,6 @@ function test_Series(series::Series)
         @test sv == software_version(series)
 
         dat = date(series)
-        @show typeof(dat)
-        @show dat
-        dump(dat)
         set_date!(series, dat)
         @test dat == date(series)
 
