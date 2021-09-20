@@ -5,6 +5,7 @@ const B = 1
 end
 
 using CxxWrap
+using MPI
 using StaticArrays
 
 # @wrapmodule "/Users/eschnett/src/openPMD-api/build/lib/libopenPMD_jl.dylib"
@@ -51,6 +52,14 @@ __init__() = @initcxx
 #   `StdVector{T}`?
 
 ################################################################################
+
+# Convert an MPI handle to a `UInt` of the respective size. This makes
+# assumptions about how MPI handles are implemented, but they need to
+# be either C integers or C pointers.
+make_uint(h::Int32) = h % UInt32
+make_uint(h::Int64) = h % UInt64
+@assert sizeof(Ptr) == sizeof(UInt)
+make_uint(h::Ptr) = h % UInt
 
 # Convert Julia vectors to `StdVector`, leave all other types alone
 wrap_vector(xs::AbstractVector) = StdVector(xs)
