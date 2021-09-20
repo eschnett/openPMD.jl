@@ -2,12 +2,12 @@
 
 @doc """
     @enum Allocation begin
-        USER
-        API
-        AUTO
+        ALLOCATION_USER
+        ALLOCATION_API
+        ALLOCATION_AUTO
     end
 """ Allocation
-export Allocation, USER, API, AUTO
+export Allocation, ALLOCATION_USER, ALLOCATION_API, ALLOCATION_AUTO
 
 """
     abstract type RecordComponent <: BaseRecordComponent end

@@ -25,15 +25,9 @@ __init__() = @initcxx
 
 # TODO:
 #
-# - do we need to worry about `jlcxx::StrictlyTypedNumber`?
-#
 # - do we really need all the `@cxxdereference` macros? yes we do.
 #   maybe we need it only for explicitly declared functions and not
 #   for wrapped functions? apparently that's true.
-#
-# - remove all the `Bool(...)` wrappers; they are not needed
-#
-# - put enum values into a namespace
 #
 # - do we really need different names to call templated functions?
 #   probably not, at least not for constructors. but we do need them
