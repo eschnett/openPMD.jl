@@ -50,8 +50,8 @@ __init__() = @initcxx
 # Convert an MPI handle to a `UInt` of the respective size. This makes
 # assumptions about how MPI handles are implemented, but they need to
 # be either C integers or C pointers.
-make_uint(h::Int32) = h % UInt32
-make_uint(h::Int64) = h % UInt64
+make_uint(h::Union{Int32,UInt32}) = h % UInt32
+make_uint(h::Union{Int64,UInt64}) = h % UInt64
 @assert sizeof(Ptr) == sizeof(UInt)
 make_uint(h::Ptr) = h % UInt
 

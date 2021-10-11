@@ -84,7 +84,9 @@ function test_WriteFile()
     series_flush(mesh)
     series_flush(iter)
     series_flush(series)
-    return flush(series)
+    flush(series)
+
+    return
 end
 test_WriteFile()
 

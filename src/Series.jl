@@ -15,7 +15,7 @@ mutable struct Series <: AbstractSeries
 end
 Series(filepath::AbstractString, access::Access, options::AbstractString="{}") = Series(CXX_Series(filepath, access, options))
 function Series(filepath::AbstractString, access::Access, comm::MPI.Comm, options::AbstractString="{}")
-    return cxx_make_Series(CXX_Series(filepath, access, make_uint(cconvert(comm)), options))
+    return Series(cxx_Series(filepath, access, make_uint(comm.val), options))
 end
 export Series
 
