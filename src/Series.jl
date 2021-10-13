@@ -186,11 +186,21 @@ backend(series::Series) = cxx_backend(series.cxx_object)::AbstractString
 export backend
 
 """
-    flush(series::Series)::AbstractString
+    flush(series::Series)::Nothing
 """
 function Base.flush(series::Series)
     cxx_flush(series.cxx_object)
-    return empty!(series.buffers)
+    empty!(series.buffers)
+    return nothing
+end
+
+"""
+    close(series::Series)::Nothing
+"""
+function Base.close(series::Series)
+    cxx_close(series.cxx_object)
+    empty!(series.buffers)
+    return nothing
 end
 
 """
