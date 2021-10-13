@@ -67,8 +67,10 @@ data = randn(T, (lsh...))
 
     store_chunk(comp, data, (lbnd...,), (lsh...,))
 
-    # Flush series to wait for all pending writes
-    flush(series)
+    # Close series to wait for all pending writes
+    @test isvalid(series)
+    close(series)
+    @test !isvalid(series)
 end
 
 MPI.Barrier(comm)
@@ -111,10 +113,10 @@ MPI.Barrier(comm)
             @test data′ == data
         end
     end
-
-    # Flush series to close file and free all MPI resources
-    flush(series)
 end
+
+# Collect garbage to finalize all object that hold on to MPI resources
+GC.gc(true)
 
 MPI.Barrier(comm)
 
