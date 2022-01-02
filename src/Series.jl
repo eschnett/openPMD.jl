@@ -10,17 +10,12 @@
 """
 mutable struct Series <: AbstractSeries
     cxx_object::CXX_Series
-    buffers::Vector
-    Series(cxx_series::CXX_Series) = new(cxx_series, [])
 end
 Series(filepath::AbstractString, access::Access, options::AbstractString="{}") = Series(CXX_Series(filepath, access, options))
 function Series(filepath::AbstractString, access::Access, comm::MPI.Comm, options::AbstractString="{}")
     return Series(cxx_Series(filepath, access, make_uint(comm.val), options))
 end
 export Series
-
-mark_buffer!(series::Series, buffer) = push!(series.buffers, buffer)
-release_buffers!(series::Series) = empty!(series.buffers)
 
 """
     openPMD_version(series::Series)::AbstractString
@@ -152,8 +147,8 @@ export machine
 set_machine!(series::Series, machine::AbstractString) = cxx_set_machine!(series.cxx_object, machine)
 export set_machine!
 
-# TODO: type.method("iteration_encoding", &SeriesImpl::iterationEncoding);
-# TODO: type.method("set_iteration_encoding!", &SeriesImpl::setIterationEncoding);
+# TODO: type.method("iteration_encoding", &Series::iterationEncoding);
+# TODO: type.method("set_iteration_encoding!", &Series::setIterationEncoding);
 
 """
     iteration_format(series::Series)::AbstractString
@@ -190,16 +185,6 @@ export backend
 """
 function Base.flush(series::Series)
     cxx_flush(series.cxx_object)
-    empty!(series.buffers)
-    return nothing
-end
-
-"""
-    close(series::Series)::Nothing
-"""
-function Base.close(series::Series)
-    cxx_close(series.cxx_object)
-    empty!(series.buffers)
     return nothing
 end
 

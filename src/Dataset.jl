@@ -32,21 +32,6 @@ Dataset(extent::Extent) = Dataset(wrap_extent(extent))
 export extend!
 
 """
-    set_chunk_size!(dset::Dataset, chunk_size::Extent)
-"""
-@cxxdereference set_chunk_size!(dset::Dataset, chunk_size::Extent) = cxx_set_chunk_size!(dset, wrap_extent(chunk_size))
-
-@doc """
-    set_compression!(dset::Dataset, compression::AbstractString, level::Int)
-""" set_compression!
-export set_compression!
-
-@doc """
-    set_custom_transform!(dset::Dataset, transform::AbstractString)
-""" set_custom_transform!
-export set_custom_transform!
-
-"""
     size(dset::Dataset)
 """
 @cxxdereference Base.size(dset::Dataset) = reverse(Int.(Tuple(cxx_extent(dset))))
@@ -60,22 +45,6 @@ export set_custom_transform!
     ndims(dset::Dataset)
 """
 @cxxdereference Base.ndims(dset::Dataset) = Int(cxx_rank(dset))
-
-"""
-    chunk_size(dset::Dataset)
-"""
-@cxxdereference chunk_size(dset::Dataset) = reverse(Int.(Tuple(cxx_chunk_size(dset))))
-export chunk_size
-
-@doc """
-    compression(dset::Dataset)::AbstractString
-""" compression
-export compression
-
-@doc """
-    transform(dset::Dataset)::AbstractString
-""" transform
-export transform
 
 @doc """
     options(dset::Dataset)::AbstractString

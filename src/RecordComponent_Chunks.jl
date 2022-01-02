@@ -15,7 +15,7 @@ for (otype, jtype) in julia_types
             @assert all(extent .>= 0)
             @assert length(buffer) == prod(extent)
             # TODO: check type of comp
-            mark_buffer!(comp.iteration.series, buffer)
+            mark_buffer!(comp.iteration, buffer)
             ptr = $(Symbol("create_aliasing_shared_ptr_", type_symbols[otype]))(pointer(buffer))
             $(Symbol("cxx_load_chunk_", type_symbols[otype]))(comp.cxx_object, ptr, wrap_offset(offset), wrap_extent(extent))
             return
@@ -37,7 +37,7 @@ for (otype, jtype) in julia_types
             @assert all(extent .>= 0)
             @assert length(data) == prod(extent)
             # TODO: check type of comp
-            mark_buffer!(comp.iteration.series, data)
+            mark_buffer!(comp.iteration, data)
             ptr = $(Symbol("create_aliasing_shared_ptr_", type_symbols[otype]))(pointer(data))
             $(Symbol("cxx_store_chunk_", type_symbols[otype]))(comp.cxx_object, ptr, wrap_offset(offset), wrap_extent(extent))
             return

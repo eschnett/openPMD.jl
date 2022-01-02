@@ -8,8 +8,13 @@
 struct Iteration <: AbstractIteration
     cxx_object::CxxRef{CXX_Iteration}
     series::AbstractSeries
+    buffers::Vector
+    Iteration(cxx_iter::CxxRef{CXX_Iteration}, series::AbstractSeries) = new(cxx_iter, series, [])
 end
 export Iteration
+
+mark_buffer!(iter::Iteration, buffer) = push!(iter.buffers, buffer)
+release_buffers!(iter::Iteration) = empty!(iter.buffers)
 
 """
     time(iter::Iteration)::CxxDouble
@@ -51,7 +56,8 @@ export set_time_unit_SI!
 """
 function Base.close(iter::Iteration; flush::Bool=true)
     cxx_close(iter.cxx_object, flush)
-    return release_buffers!(iter.series)
+    release_buffers!(iter)
+    return nothing
 end
 
 """
@@ -59,12 +65,6 @@ end
 """
 closed(iter::Iteration) = cxx_closed(iter.cxx_object)::Bool
 export closed
-
-"""
-    closed_by_writer(iter::Iteration)::Bool
-"""
-closed_by_writer(iter::Iteration) = cxx_closed_by_writer(iter.cxx_object)::Bool
-export closed_by_writer
 
 """
     get_mesh(iter::Iteration, key::AbstractString)::Mesh

@@ -15,6 +15,5 @@ function test_Iteration(iter::Iteration)
         @test time_unit_SI(iter) === tu
 
         @test !closed(iter)
-        @test !closed_by_writer(iter)
     end
 end
