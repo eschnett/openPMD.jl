@@ -1,7 +1,7 @@
 name = "openPMD"
 uuid = "e4c73209-6c8c-4213-807b-38d671e094ab"
 authors = ["Erik Schnetter <schnetter@gmail.com>"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 ADIOS2_jll = "44b1415a-b224-5c99-9168-ff4febb5f37f"
