@@ -1,7 +1,7 @@
 name = "openPMD"
 uuid = "e4c73209-6c8c-4213-807b-38d671e094ab"
 authors = ["Erik Schnetter <schnetter@gmail.com>"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
@@ -15,4 +15,4 @@ CxxWrap = "0.11.2, 0.12.0"
 MPI = "0.18.0, 0.19.0"
 StaticArrays = "1.2.4"
 julia = "1.6"
-openPMD_api_jll = "0.14.3"
+openPMD_api_jll = "0.14.3, 0.15"
