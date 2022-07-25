@@ -59,7 +59,7 @@ jobs:
       - uses: julia-actions/julia-runtest@v1
         # arch='x86': There is a weird segfault when converting a Julia String to a C++ std::string
         # os='windows': LoadError: [setAttribute] Value for string attribute 'date' must not be empty!
-        continue-on-error: ${{matrix.arch == 'x86' || matrix.os == 'windows' }}
+        continue-on-error: ${{matrix.arch == 'x86' || matrix.os == 'windows-latest' }}
       - uses: julia-actions/julia-processcoverage@v1
       - uses: codecov/codecov-action@v1
         with:
