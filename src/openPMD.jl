@@ -1,9 +1,5 @@
 module openPMD
 
-module A
-const B = 1
-end
-
 using CxxWrap
 using MPI
 using StaticArrays
