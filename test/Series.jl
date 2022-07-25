@@ -42,9 +42,9 @@ function test_Series(series::Series)
 
         dat = date(series)
         # It seems that the date is not set correctly on Windows
-        if !Sys.iswindows()
+        if Sys.iswindows()
             @show dat
-            @show typeof dat
+            @show typeof(dat)
             @test dat ≡ nothing
             dat = now()
         end
