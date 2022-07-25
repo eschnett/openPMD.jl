@@ -41,13 +41,6 @@ function test_Series(series::Series)
         @test sv == software_version(series)
 
         dat = date(series)
-        # It seems that the date is not set correctly on Windows
-        if Sys.iswindows()
-            @show dat
-            @show typeof(dat)
-            @test dat ≡ nothing
-            dat = now()
-        end
         set_date!(series, dat)
         @test dat == date(series)
 
