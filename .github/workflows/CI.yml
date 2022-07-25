@@ -26,7 +26,7 @@ jobs:
             version: "1.7"
           - arch: "x64"
             os: "ubuntu-latest"
-            version: "1.8"
+            version: "1.8.0-beta3"
           - arch: "x64"
             os: "ubuntu-latest"
             version: "nightly"
