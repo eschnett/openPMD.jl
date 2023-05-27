@@ -1,7 +1,7 @@
 name = "openPMD"
 uuid = "e4c73209-6c8c-4213-807b-38d671e094ab"
 authors = ["Erik Schnetter <schnetter@gmail.com>"]
-version = "0.4.0"
+version = "0.3.0"
 
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
