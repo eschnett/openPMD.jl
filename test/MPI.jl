@@ -56,12 +56,18 @@ data = randn(T, (lsh...))
     set_name!(series, "hello")
     set_author!(series, "Erik Schnetter <schnetter@gmail.com>")
 
-    iter = get_iteration(series, 0)
-    mesh = get_mesh(iter, "the_global_mesh")
+    @test 0 ∉ keys(iterations(series))
+    iter = iterations(series)[0]
+    @test 0 ∈ keys(iterations(series))
+    @test "the_global_mesh" ∉ keys(meshes(iter))
+    mesh = meshes(iter)["the_global_mesh"]
+    @test "the_global_mesh" ∈ keys(meshes(iter))
 
     dset = Dataset(T, (gsh...,))
 
-    comp = get_component(mesh, "the_record")
+    @test "the_record" ∉ keys(mesh)
+    comp = mesh["the_record"]
+    @test "the_record" ∈ keys(mesh)
     reset_dataset!(comp, dset)
     set_position!(comp, (lxmin...,))
 
@@ -80,10 +86,13 @@ MPI.Barrier(comm)
     @test name(series) == "hello"
     @test author(series) == "Erik Schnetter <schnetter@gmail.com>"
 
-    iter = get_iteration(series, 0)
-    mesh = get_mesh(iter, "the_global_mesh")
+    @test 0 ∈ keys(iterations(series))
+    iter = iterations(series)[0]
+    @test "the_global_mesh" ∈ keys(meshes(iter))
+    mesh = meshes(iter)["the_global_mesh"]
 
-    comp = get_component(mesh, "the_record")
+    @test "the_record" ∈ keys(mesh)
+    comp = mesh["the_record"]
     @test eltype(comp) == T
     @test ndims(comp) == D
     @test size(comp) == (gsh...,)

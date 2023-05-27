@@ -33,7 +33,8 @@ include("BaseRecordComponent.jl")
 include("RecordComponent.jl")
 include("MeshRecordComponent.jl")
 
-include("Container.jl")
+# TODO: Test Mesh, Meshes, and Iterations instead
+# include("Container.jl")
 include("Mesh.jl")
 
 include("Iteration.jl")
@@ -45,12 +46,17 @@ filename = joinpath(tmpdir, "hello.json")
 
 function test_WriteFile()
     series = Series(filename, ACCESS_CREATE)
+    @test series isa Series
     set_name!(series, "hello")
     set_author!(series, "Erik Schnetter <schnetter@gmail.com>")
 
-    iter = get_iteration(series, 0)
+    @test 0 ∉ keys(iterations(series))
+    iter = iterations(series)[0]::Iteration
+    @test 0 ∈ keys(iterations(series))
 
-    mesh = get_mesh(iter, "my_first_mesh")
+    @test "my_first_mesh" ∉ keys(meshes(iter))
+    mesh = meshes(iter)["my_first_mesh"]::Mesh
+    @test "my_first_mesh" ∈ keys(meshes(iter))
 
     data = Int[10i + j for i in 1:2, j in 1:3]
     T = eltype(data)
@@ -58,7 +64,9 @@ function test_WriteFile()
     sz = size(data)            # could be larger
     dset = Dataset(T, sz)
 
-    comp = get_component(mesh, "my_first_record")
+    @test "my_first_record" ∉ keys(mesh)
+    comp = mesh["my_first_record"]::MeshRecordComponent
+    @test "my_first_record" ∈ keys(mesh)
     reset_dataset!(comp, dset)
     set_position!(comp, (0.0, 0.0))
 
@@ -75,7 +83,7 @@ function test_WriteFile()
     test_RecordComponent(comp)
     test_MeshRecordComponent(comp)
 
-    test_Container(mesh)
+    # test_Container(mesh)
     test_Mesh(mesh)
 
     test_Iteration(iter)
@@ -96,11 +104,14 @@ function test_ReadFile()
     @test name(series) == "hello"
     @test author(series) == "Erik Schnetter <schnetter@gmail.com>"
 
-    iter = get_iteration(series, 0)
+    @test 0 ∈ keys(iterations(series))
+    iter = iterations(series)[0]::Iteration
 
-    mesh = get_mesh(iter, "my_first_mesh")
+    @test "my_first_mesh" ∈ keys(meshes(iter))
+    mesh = meshes(iter)["my_first_mesh"]::Mesh
 
-    comp = get_component(mesh, "my_first_record")
+    @test "my_first_record" ∈ keys(mesh)
+    comp = mesh["my_first_record"]::MeshRecordComponent
     T = eltype(comp)
     D = ndims(comp)
     sz = size(comp)

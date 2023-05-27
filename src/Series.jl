@@ -181,10 +181,10 @@ backend(series::Series) = cxx_backend(series.cxx_object)::AbstractString
 export backend
 
 """
-    flush(series::Series)::Nothing
+    flush(series::Series, backendConfig::AbstractString="{}")::Nothing
 """
-function Base.flush(series::Series)
-    cxx_flush(series.cxx_object)
+function Base.flush(series::Series, backendConfig::AbstractString="{}")
+    cxx_flush(series.cxx_object, backendConfig)
     return nothing
 end
 
@@ -193,16 +193,88 @@ end
 """
 Base.isvalid(series::Series) = cxx_isvalid(series.cxx_object)::Bool
 
-# @doc """
-#     iterations(series::Series)
-# """ iterations
-# export iterations
+"""
+    struct Iterations   # <: AbstractDict{Int,Iteration}
+        ...
+    end
+"""
+struct Iterations   # <: AbstractDict{Int,Iteration}
+    cxx_object::CxxRef{CXX_Container{CXX_Iteration,UInt64}}
+    series::AbstractSeries
+end
+export Iterations
 
 """
-    get_iteration(series::Series, idx::Int)::Iteration
+    eltype(::Type{Iterations})::Type
+    eltype(::Iterations)::Type
 """
-get_iteration(series::Series, idx::Int) = Iteration(cxx_iterations(series.cxx_object)[UInt64(idx)], series)
-export get_iteration
+Base.eltype(::Type{Iterations}) = Iteration
+Base.eltype(::Iterations) = eltype(Iterations)
+
+"""
+    keytype(::Type{Iterations})::Type
+    keytype(::Iterations)::Type
+"""
+Base.keytype(::Type{Iterations}) = Int
+Base.keytype(::Iterations) = keytype(Iterations)
+
+"""
+    isempty(iters::Iterations)
+"""
+Base.isempty(iters::Iterations) = cxx_empty(iters.cxx_object)::Bool
+
+"""
+    length(iters::Iterations)
+"""
+Base.length(iters::Iterations) = Int(cxx_length(iters.cxx_object))
+
+"""
+    empty!(iters::Iterations)
+"""
+Base.empty!(iters::Iterations) = (cxx_empty!(iters.cxx_object); iters)
+
+"""
+    getindex(iters::Iterations, n::Integer)::IterationsRecordComponent
+    iters[n]
+"""
+Base.getindex(iters::Iterations, n::Integer) = Iteration(cxx_getindex(iters.cxx_object, UInt64(n)), iters.series)
+
+"""
+    setindex!(iters::Iterations, iter::Iteration, n::Integer)
+    iters[n] = iter
+"""
+function Base.setindex!(iters::Iterations, iter::Iteration, n::Integer)
+    return (cxx_setindex!(iters.cxx_object, iter.cxx_object, UInt64(n)); iters)
+end
+
+"""
+    count(iters::Iterations, n::Integer)::Int
+"""
+Base.count(iters::Iterations, n::Integer) = Int(cxx_count(iters.cxx_object, UInt64(n)))
+
+"""
+    in(n::Integer, iters::Iterations)::Bool
+    n in iters
+"""
+Base.in(n::Integer, iters::Iterations) = cxx_contains(iters.cxx_object, UInt64(n))::Bool
+
+"""
+    delete!(iters::Iterations, n::Integer)
+"""
+Base.delete!(iters::Iterations, n::Integer) = (cxx_delete!(iters.cxx_object, UInt64(n)); iters)
+
+"""
+    keys(iters::Iterations)::AbstractVector{Int}
+"""
+Base.keys(iters::Iterations) = Int.(cxx_keys(iters.cxx_object))
+
+# TODO: Julia iteration interface (`iterate`...) etc.
+
+"""
+     iterations(series::Series)::Iterations
+"""
+iterations(series::Series) = Iterations(cxx_iterations(series.cxx_object), series)
+export iterations
 
 # @doc """
 #     write_iterations(series::Series)

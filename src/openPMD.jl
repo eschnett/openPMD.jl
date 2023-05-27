@@ -71,10 +71,9 @@ include("Attribute.jl")
 include("Attributable.jl")
 include("Dataset.jl")
 
+# Forward declarations
 abstract type AbstractIteration <: Attributable end
 abstract type AbstractSeries <: Attributable end
-
-include("Container.jl")
 
 include("BaseRecordComponent.jl")
 include("RecordComponent.jl")
