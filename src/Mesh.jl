@@ -20,21 +20,80 @@ export Geometry, GEOMETRY_cartesian, GEOMETRY_theta_mode, GEOMETRY_cylindrical, 
 export DataOrder, DATAORDER_C, DATAORDER_F
 
 """
-    struct Mesh
+    struct Mesh <: Attributable
         ...
     end
 """
-struct Mesh <: Container{MeshRecordComponent,AbstractString}
+struct Mesh <: Attributable   # AbstractDict{AbstractString,MeshRecordComponent}
     cxx_object::CxxRef{CXX_Mesh}
     iteration::AbstractIteration
 end
 export Mesh
 
 """
-    get_component(mesh::Mesh, key::AbstractString)::MeshRecordComponent
+    eltype(::Type{Mesh})::Type
+    eltype(::Mesh)::Type
 """
-get_component(mesh::Mesh, key::AbstractString) = MeshRecordComponent(mesh.cxx_object[key], mesh.iteration)
-export get_component
+Base.eltype(::Type{Mesh}) = MeshRecordComponent
+Base.eltype(::Mesh) = eltype(Mesh)
+
+"""
+    keytype(::Type{Mesh})::Type
+    keytype(::Mesh)::Type
+"""
+Base.keytype(::Type{Mesh}) = AbstractString
+Base.keytype(::Mesh) = keytype(Mesh)
+
+"""
+    isempty(mesh::Mesh)
+"""
+Base.isempty(mesh::Mesh) = cxx_empty(mesh.cxx_object)::Bool
+
+"""
+    length(mesh::Mesh)
+"""
+Base.length(mesh::Mesh) = Int(cxx_length(mesh.cxx_object))
+
+"""
+    empty!(mesh::Mesh)
+"""
+Base.empty!(mesh::Mesh) = (cxx_empty!(mesh.cxx_object); mesh)
+
+"""
+    getindex(mesh::Mesh, name::AbstractString)::MeshRecordComponent
+    mesh[name]
+"""
+Base.getindex(mesh::Mesh, name::AbstractString) = MeshRecordComponent(cxx_getindex(mesh.cxx_object, name), mesh.iteration)
+
+"""
+    setindex!(mesh::Mesh, comp::MeshRecordComponent, name::AbstractString)
+    mesh[name] = comp
+"""
+function Base.setindex!(mesh::Mesh, comp::MeshRecordComponent, name::AbstractString)
+    cxx_setindex!(mesh.cxx_object, comp.cxx_object, name)
+    return mesh
+end
+
+"""
+    count(mesh::Mesh, name::AbstractString)::Int
+"""
+Base.count(mesh::Mesh, name::AbstractString) = Int(cxx_count(mesh.cxx_object, name))
+
+"""
+    in(name::AbstractString, mesh::Mesh)::Bool
+    name in mesh
+"""
+Base.in(name::AbstractString, mesh::Mesh) = cxx_contains(mesh.cxx_object, name)::Bool
+
+"""
+    delete!(mesh::Mesh, name::AbstractString)
+"""
+Base.delete!(mesh::Mesh, name::AbstractString) = (cxx_delete!(mesh.cxx_object, name); mesh)
+
+"""
+    keys(mesh::Mesh)::AbstractVector{<:AbstractString}
+"""
+Base.keys(mesh::Mesh) = cxx_keys(mesh.cxx_object)
 
 """
     unit_dimension(mesh::Mesh)::SVector{7,Double}
@@ -137,7 +196,7 @@ export set_grid_unit_SI!
 """
     set_unit_dimension!(mesh::Mesh, unit_dim::Dict{UnitDimension,<:AbstractFloat})
 """
-@cxxdereference function set_unit_dimension!(mesh::Mesh, unit_dim::Dict{UnitDimension,<:AbstractFloat})
+function set_unit_dimension!(mesh::Mesh, unit_dim::Dict{UnitDimension,<:AbstractFloat})
     return cxx_set_unit_dimension1!(mesh.cxx_object,
                                     SVector{7,Float64}(get(unit_dim, UNITDIMENSION_L, 0.0), get(unit_dim, UNITDIMENSION_M, 0.0),
                                                        get(unit_dim, UNITDIMENSION_T, 0.0), get(unit_dim, UNITDIMENSION_I, 0.0),

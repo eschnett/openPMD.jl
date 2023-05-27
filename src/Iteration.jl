@@ -67,7 +67,85 @@ closed(iter::Iteration) = cxx_closed(iter.cxx_object)::Bool
 export closed
 
 """
-    get_mesh(iter::Iteration, key::AbstractString)::Mesh
+    isopen(iter::Iteration)::Bool
 """
-get_mesh(iter::Iteration, key::AbstractString) = Mesh(cxx_meshes(iter.cxx_object)[key], iter)
-export get_mesh
+Base.isopen(iter::Iteration) = !cxx_closed(iter.cxx_object)::Bool
+
+"""
+    struct Meshes   # <: AbstractDict{AbstractString,Mesh}
+        ...
+    end
+"""
+struct Meshes   # <: AbstractDict{AbstractString,Mesh}
+    cxx_object::CxxRef{CXX_Container{CXX_Mesh,StdLib.StdString}}
+    iteration::AbstractIteration
+end
+export Meshes
+
+"""
+    eltype(::Type{Meshes})::Type
+    eltype(::Meshes)::Type
+"""
+Base.eltype(::Type{Meshes}) = Mesh
+Base.eltype(::Meshes) = eltype(Meshes)
+
+"""
+    keytype(::Type{Meshes})::Type
+    keytype(::Meshes)::Type
+"""
+Base.keytype(::Type{Meshes}) = AbstractString
+Base.keytype(::Meshes) = keytype(Meshes)
+
+"""
+    isempty(meshes::Meshes)
+"""
+Base.isempty(meshes::Meshes) = cxx_empty(meshes.cxx_object)::Bool
+
+"""
+    length(meshes::Meshes)
+"""
+Base.length(meshes::Meshes) = Int(cxx_length(meshes.cxx_object))
+
+"""
+    empty!(meshes::Meshes)
+"""
+Base.empty!(meshes::Meshes) = (cxx_empty!(meshes.cxx_object); meshes)
+
+"""
+    getindex(meshes::Meshes, name::AbstractString)::MeshesRecordComponent
+    meshes[name]
+"""
+Base.getindex(meshes::Meshes, name::AbstractString) = Mesh(cxx_getindex(meshes.cxx_object, name), meshes.iteration)
+
+"""
+    setindex!(meshes::Meshes, comp::MeshesRecordComponent, name::AbstractString)
+    meshes[name] = mesh
+"""
+Base.setindex!(meshes::Meshes, mesh::Mesh, name::AbstractString) = (cxx_setindex!(meshes.cxx_object, mesh.cxx_object, name); meshes)
+
+"""
+    count(meshes::Meshes, name::AbstractString)::Int
+"""
+Base.count(meshes::Meshes, name::AbstractString) = Int(cxx_count(meshes.cxx_object, name))
+
+"""
+    in(name::AbstractString, meshes::Meshes)::Bool
+    name in mesh
+"""
+Base.in(name::AbstractString, meshes::Meshes) = cxx_contains(meshes.cxx_object, name)::Bool
+
+"""
+    delete!(meshes::Meshes, name::AbstractString)
+"""
+Base.delete!(meshes::Meshes, name::AbstractString) = (cxx_delete!(meshes.cxx_object, name); meshes)
+
+"""
+    keys(meshes::Meshes)::AbstractVector{<:AbstractString}
+"""
+Base.keys(meshes::Meshes) = cxx_keys(meshes.cxx_object)
+
+"""
+     meshes(iter::Iteration)::Meshes
+"""
+meshes(iter::Iteration) = Meshes(cxx_meshes(iter.cxx_object), iter)
+export meshes
