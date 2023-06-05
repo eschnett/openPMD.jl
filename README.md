@@ -38,7 +38,6 @@ julia> sz = size(data)
 (2, 3)
 
 julia> dset = Dataset(T, sz)
-julia> dset = Dataset(T, sz)
 
 julia> comp = mesh["my_first_record"]
 julia> reset_dataset!(comp, dset)
@@ -100,22 +99,22 @@ julia> chunks = available_chunks(comp)
 
 julia> datas = Array{T,D}[]
 julia> for chunk in chunks
-julia>     off = chunk.offset
-julia>     ext = chunk.extent
-julia>     data = Array{T}(undef, ext)
-julia>     load_chunk(comp, data, off, ext)
-julia>     push!(datas, data)
-julia> end
+           off = chunk.offset
+           ext = chunk.extent
+           data = Array{T}(undef, ext)
+           load_chunk(comp, data, off, ext)
+           push!(datas, data)
+       end
 julia> 
 julia> close(iter)
 julia> 
 julia> for (chunk,data) in zip(chunks,datas)
-julia>     println("Chunk:")
-julia>     println("    offset: ", chunk.offset)
-julia>     println("    extent: ", chunk.extent)
-julia>     println("    minimum: ", minimum(data))
-julia>     println("    maximum: ", maximum(data))
-julia> end
+           println("Chunk:")
+           println("    offset: ", chunk.offset)
+           println("    extent: ", chunk.extent)
+           println("    minimum: ", minimum(data))
+           println("    maximum: ", maximum(data))
+       end
 Chunk:
     offset: (0, 0)
     extent: (2, 3)
