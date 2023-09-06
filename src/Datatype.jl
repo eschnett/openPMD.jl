@@ -151,10 +151,14 @@ openpmd_type(::Type{<:Union{NTuple{7,CxxDouble},SVector{7,CxxDouble}}}) = ARR_DB
 openpmd_type(::Type{CxxBool}) = BOOL
 
 """
-    openPMD_datatypes::AbstractVector{Datatype}
+    openPMD_datatypes()::AbstractVector{Datatype}
 """
-openPMD_datatypes
-export openPMD_datatypes
+function openpmd_datatypes()
+    return [CHAR, UCHAR, SHORT, INT, LONG, LONGLONG, USHORT, UINT, ULONG, ULONGLONG, FLOAT, DOUBLE, CFLOAT, CDOUBLE, STRING,
+            VEC_CHAR, VEC_UCHAR, VEC_SHORT, VEC_INT, VEC_LONG, VEC_LONGLONG, VEC_USHORT, VEC_UINT, VEC_ULONG, VEC_ULONGLONG,
+            VEC_FLOAT, VEC_DOUBLE, VEC_CFLOAT, VEC_CDOUBLE, VEC_STRING, ARR_DBL_7, BOOL]
+end
+export openpmd_datatypes
 
 """
     OpenPMDType = Union{...}

@@ -2,6 +2,8 @@ function test_Datatype()
     @testset "Datatype" begin
         @test Datatype isa Type
 
+        @test openPMD_datatypes isa AbstractVector{<:Type}
+
         otypes = [CHAR, UCHAR, SHORT, INT, LONG, LONGLONG, USHORT, UINT, ULONG, ULONGLONG, FLOAT, DOUBLE, CFLOAT, CDOUBLE, STRING,
                   VEC_CHAR, VEC_UCHAR, VEC_SHORT, VEC_INT, VEC_LONG, VEC_LONGLONG, VEC_USHORT, VEC_UINT, VEC_ULONG, VEC_ULONGLONG,
                   VEC_FLOAT, VEC_DOUBLE, VEC_CFLOAT, VEC_CDOUBLE, VEC_STRING, BOOL, ARR_DBL_7]
