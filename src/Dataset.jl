@@ -17,7 +17,7 @@ function Dataset(T::Type{<:OpenPMDType}, extent::Extent, options::AbstractString
 end
 Dataset(extent::Extent) = Dataset(wrap_extent(extent))
 
-# for (otype, jtype) in julia_types
+# for (otype, jtype) in julia_types()
 #     @eval begin
 #         @cxxdereference function Dataset(::Type{$jtype}, extent::Extent, options::AbstractString="{}")
 #             return Dataset($otype, wrap_extent(extent), options)

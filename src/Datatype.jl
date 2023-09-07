@@ -49,6 +49,15 @@ const CxxUInt = Cuint
 const CxxUShort = Cushort
 export CxxDouble, CxxFloat, CxxInt, CxxShort, CxxUInt, CxxUShort
 
+# Missing conversions
+# Base.convert(::Type{Datatype}, d::CxxWrap.CxxWrapCore.ConstCxxRef{Datatype}) = d[]::Datatype
+
+# Missing `setindex!` signatures
+Base.setindex!(h::Dict{Datatype, Type}, v0::Type, key0::CxxWrap.CxxWrapCore.ConstCxxRef{openPMD.Datatype}) =
+    setindex!(h, v0, key0[])
+Base.setindex!(h::Dict{Datatype, Symbol}, v0::Symbol, key0::CxxWrap.CxxWrapCore.ConstCxxRef{openPMD.Datatype}) =
+ setindex!(h, v0, key0[])
+
 Base.hash(b::CxxBool, u::UInt) = hash(hash(Bool(b), u), UInt(0x4c87662d))
 
 # We cannot use this definition for equality. It leads to `LONG` ==
@@ -68,51 +77,57 @@ Base.hash(d::Datatype, u::UInt) = hash(hash(convert(UInt, d), u), UInt(0x6b22431
 
 # Convert between Julia types and OpenPMD type ids
 
-const type_symbols = Dict{Datatype,Symbol}(CHAR => :CHAR, UCHAR => :UCHAR, SHORT => :SHORT, INT => :INT, LONG => :LONG,
-                                           LONGLONG => :LONGLONG, USHORT => :USHORT, UINT => :UINT, ULONG => :ULONG,
-                                           ULONGLONG => :ULONGLONG, FLOAT => :FLOAT, DOUBLE => :DOUBLE, CFLOAT => :CFLOAT,
-                                           CDOUBLE => :CDOUBLE, STRING => :STRING, VEC_CHAR => :VEC_CHAR, VEC_UCHAR => :VEC_UCHAR,
-                                           VEC_SHORT => :VEC_SHORT, VEC_INT => :VEC_INT, VEC_LONG => :VEC_LONG,
-                                           VEC_LONGLONG => :VEC_LONGLONG, VEC_USHORT => :VEC_USHORT, VEC_UINT => :VEC_UINT,
-                                           VEC_ULONG => :VEC_ULONG, VEC_ULONGLONG => :VEC_ULONGLONG, VEC_FLOAT => :VEC_FLOAT,
-                                           VEC_DOUBLE => :VEC_DOUBLE, VEC_CFLOAT => :VEC_CFLOAT, VEC_CDOUBLE => :VEC_CDOUBLE,
-                                           VEC_STRING => :VEC_STRING, ARR_DBL_7 => :ARR_DBL_7, BOOL => :BOOL)
+@memoize function type_symbols()
+    return Dict{Datatype,Symbol}(CHAR => :CHAR, UCHAR => :UCHAR, SHORT => :SHORT, INT => :INT, LONG => :LONG,
+                                 LONGLONG => :LONGLONG, USHORT => :USHORT, UINT => :UINT, ULONG => :ULONG,
+                                 ULONGLONG => :ULONGLONG, FLOAT => :FLOAT, DOUBLE => :DOUBLE, CFLOAT => :CFLOAT,
+                                 CDOUBLE => :CDOUBLE, STRING => :STRING, VEC_CHAR => :VEC_CHAR, VEC_UCHAR => :VEC_UCHAR,
+                                 VEC_SHORT => :VEC_SHORT, VEC_INT => :VEC_INT, VEC_LONG => :VEC_LONG,
+                                 VEC_LONGLONG => :VEC_LONGLONG, VEC_USHORT => :VEC_USHORT, VEC_UINT => :VEC_UINT,
+                                 VEC_ULONG => :VEC_ULONG, VEC_ULONGLONG => :VEC_ULONGLONG, VEC_FLOAT => :VEC_FLOAT,
+                                 VEC_DOUBLE => :VEC_DOUBLE, VEC_CFLOAT => :VEC_CFLOAT, VEC_CDOUBLE => :VEC_CDOUBLE,
+                                 VEC_STRING => :VEC_STRING, ARR_DBL_7 => :ARR_DBL_7, BOOL => :BOOL)
+end
 
-const julia_types = Dict{Datatype,Type}(CHAR => CxxChar, UCHAR => CxxUChar, SHORT => CxxShort, INT => CxxInt, LONG => CxxLong,
-                                        LONGLONG => CxxLongLong, USHORT => CxxUShort, UINT => CxxUInt, ULONG => CxxULong,
-                                        ULONGLONG => CxxULongLong, FLOAT => CxxFloat, DOUBLE => CxxDouble,
-                                        CFLOAT => Complex{CxxFloat}, CDOUBLE => Complex{CxxDouble}, STRING => String,
-                                        VEC_CHAR => Vector{CxxChar}, VEC_UCHAR => Vector{CxxUChar}, VEC_SHORT => Vector{CxxShort},
-                                        VEC_INT => Vector{CxxInt}, VEC_LONG => Vector{CxxLong}, VEC_LONGLONG => Vector{CxxLongLong},
-                                        VEC_USHORT => Vector{CxxUShort}, VEC_UINT => Vector{CxxUInt}, VEC_ULONG => Vector{CxxULong},
-                                        VEC_ULONGLONG => Vector{CxxULongLong}, VEC_FLOAT => Vector{CxxFloat},
-                                        VEC_DOUBLE => Vector{CxxDouble}, VEC_CFLOAT => Vector{Complex{CxxFloat}},
-                                        VEC_CDOUBLE => Vector{Complex{CxxDouble}}, VEC_STRING => Vector{String},
-                                        ARR_DBL_7 => SVector{7,CxxDouble}, BOOL => CxxBool)
+@memoize function julia_types()
+    return Dict{Datatype,Type}(CHAR => CxxChar, UCHAR => CxxUChar, SHORT => CxxShort, INT => CxxInt, LONG => CxxLong,
+                               LONGLONG => CxxLongLong, USHORT => CxxUShort, UINT => CxxUInt, ULONG => CxxULong,
+                               ULONGLONG => CxxULongLong, FLOAT => CxxFloat, DOUBLE => CxxDouble,
+                               CFLOAT => Complex{CxxFloat}, CDOUBLE => Complex{CxxDouble}, STRING => String,
+                               VEC_CHAR => Vector{CxxChar}, VEC_UCHAR => Vector{CxxUChar}, VEC_SHORT => Vector{CxxShort},
+                               VEC_INT => Vector{CxxInt}, VEC_LONG => Vector{CxxLong}, VEC_LONGLONG => Vector{CxxLongLong},
+                               VEC_USHORT => Vector{CxxUShort}, VEC_UINT => Vector{CxxUInt}, VEC_ULONG => Vector{CxxULong},
+                               VEC_ULONGLONG => Vector{CxxULongLong}, VEC_FLOAT => Vector{CxxFloat},
+                               VEC_DOUBLE => Vector{CxxDouble}, VEC_CFLOAT => Vector{Complex{CxxFloat}},
+                               VEC_CDOUBLE => Vector{Complex{CxxDouble}}, VEC_STRING => Vector{String},
+                               ARR_DBL_7 => SVector{7,CxxDouble}, BOOL => CxxBool)
+end
 function julia_type(d::Datatype)
-    T = get(julia_types, d, nothing)
+    T = get(julia_types(), d, nothing)
     T ≡ nothing && error("unknown Datatype $d")
     return T
 end
 
-const abstract_julia_types = Dict{Datatype,Type}(CHAR => CxxChar, UCHAR => CxxUChar, SHORT => CxxShort, INT => CxxInt,
-                                                 LONG => CxxLong, LONGLONG => CxxLongLong, USHORT => CxxUShort, UINT => CxxUInt,
-                                                 ULONG => CxxULong, ULONGLONG => CxxULongLong, FLOAT => CxxFloat,
-                                                 DOUBLE => CxxDouble, CFLOAT => Complex{CxxFloat}, CDOUBLE => Complex{CxxDouble},
-                                                 STRING => AbstractString, VEC_CHAR => AbstractVector{CxxChar},
-                                                 VEC_UCHAR => AbstractVector{CxxUChar}, VEC_SHORT => AbstractVector{CxxShort},
-                                                 VEC_INT => AbstractVector{CxxInt}, VEC_LONG => AbstractVector{CxxLong},
-                                                 VEC_LONGLONG => AbstractVector{CxxLongLong},
-                                                 VEC_USHORT => AbstractVector{CxxUShort}, VEC_UINT => AbstractVector{CxxUInt},
-                                                 VEC_ULONG => AbstractVector{CxxULong},
-                                                 VEC_ULONGLONG => AbstractVector{CxxULongLong},
-                                                 VEC_FLOAT => AbstractVector{CxxFloat}, VEC_DOUBLE => AbstractVector{CxxDouble},
-                                                 VEC_CFLOAT => AbstractVector{Complex{CxxFloat}},
-                                                 VEC_CDOUBLE => AbstractVector{Complex{CxxDouble}},
-                                                 VEC_STRING => AbstractVector{<:AbstractString},
-                                                 ARR_DBL_7 => Union{NTuple{7,CxxDouble},SVector{7,CxxDouble}}, BOOL => CxxBool)
+@memoize function abstract_julia_types()
+    return Dict{Datatype,Type}(CHAR => CxxChar, UCHAR => CxxUChar, SHORT => CxxShort, INT => CxxInt,
+                               LONG => CxxLong, LONGLONG => CxxLongLong, USHORT => CxxUShort, UINT => CxxUInt,
+                               ULONG => CxxULong, ULONGLONG => CxxULongLong, FLOAT => CxxFloat,
+                               DOUBLE => CxxDouble, CFLOAT => Complex{CxxFloat}, CDOUBLE => Complex{CxxDouble},
+                               STRING => AbstractString, VEC_CHAR => AbstractVector{CxxChar},
+                               VEC_UCHAR => AbstractVector{CxxUChar}, VEC_SHORT => AbstractVector{CxxShort},
+                               VEC_INT => AbstractVector{CxxInt}, VEC_LONG => AbstractVector{CxxLong},
+                               VEC_LONGLONG => AbstractVector{CxxLongLong},
+                               VEC_USHORT => AbstractVector{CxxUShort}, VEC_UINT => AbstractVector{CxxUInt},
+                               VEC_ULONG => AbstractVector{CxxULong},
+                               VEC_ULONGLONG => AbstractVector{CxxULongLong},
+                               VEC_FLOAT => AbstractVector{CxxFloat}, VEC_DOUBLE => AbstractVector{CxxDouble},
+                               VEC_CFLOAT => AbstractVector{Complex{CxxFloat}},
+                               VEC_CDOUBLE => AbstractVector{Complex{CxxDouble}},
+                               VEC_STRING => AbstractVector{<:AbstractString},
+                               ARR_DBL_7 => Union{NTuple{7,CxxDouble},SVector{7,CxxDouble}}, BOOL => CxxBool)
+end
 function abstract_julia_type(d::Datatype)
-    T = get(abstract_julia_types, d, nothing)
+    T = get(abstract_julia_types(), d, nothing)
     T ≡ nothing && error("unknown Datatype $d")
     return T
 end

@@ -32,10 +32,10 @@ export set_position!
 # """
 # function make_constant end
 export make_constant
-for (otype, jtype) in julia_types
+for (otype, jtype) in julia_types()
     @eval begin
         function make_constant(comp::MeshRecordComponent, value::$jtype)
-            return $(Symbol("cxx_make_constant_", type_symbols[otype]))(comp.cxx_object, value)
+            return $(Symbol("cxx_make_constant_", type_symbols()[otype]))(comp.cxx_object, value)
         end
     end
 end

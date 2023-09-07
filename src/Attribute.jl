@@ -6,10 +6,10 @@
 
 @cxxdereference dtype(attr::CXX_Attribute) = julia_type(cxx_dtype(attr))::Type
 
-for (otype, jtype) in abstract_julia_types
+for (otype, jtype) in abstract_julia_types()
     @eval begin
         @cxxdereference function Base.getindex(attr::CXX_Attribute, ::Type{<:$jtype})
-            return $(Symbol("cxx_get_", type_symbols[otype]))(attr)::$jtype
+            return $(Symbol("cxx_get_", type_symbols()[otype]))(attr)::$jtype
         end
     end
 end

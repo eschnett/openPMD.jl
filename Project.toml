@@ -6,11 +6,13 @@ version = "0.3.1"
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
 MPI = "da04e1cc-30fd-572f-bb4f-1f8673147195"
+Memoize = "c03570c3-d221-55d1-a50c-7939bbd78826"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 openPMD_api_jll = "0cbd5639-4ed4-5caa-9af9-db1a1b49a12d"
 
 [compat]
 CxxWrap = "0.11.2, 0.12.0, 0.13.0, 0.14.0"
+Memoize = "0.4.4"
 MPI = "0.18.0, 0.19.0, 0.20.0"
 StaticArrays = "1.2.4"
 julia = "1.7"

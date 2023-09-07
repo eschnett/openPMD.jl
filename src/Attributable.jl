@@ -14,10 +14,10 @@ function set_attribute!(attr::Attributable, key::AbstractString, value::OpenPMDT
     return attr
 end
 export set_attribute!
-for (otype, jtype) in julia_types
+for (otype, jtype) in julia_types()
     @eval begin
         @cxxdereference function cxx_set_attribute!(attr::CXX_Attributable, key::AbstractString, value::$jtype)
-            $(Symbol("cxx_set_attribute_", type_symbols[otype], "!"))(attr, key, wrap_vector(value))
+            $(Symbol("cxx_set_attribute_", type_symbols()[otype], "!"))(attr, key, wrap_vector(value))
             return attr
         end
     end

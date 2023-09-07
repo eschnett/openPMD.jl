@@ -2,6 +2,7 @@ module openPMD
 
 using CxxWrap
 using MPI
+using Memoize
 using StaticArrays
 
 # @wrapmodule "/Users/eschnett/src/openPMD-api/build/lib/libopenPMD_jl.dylib"
@@ -13,7 +14,7 @@ using StaticArrays
 #     Pkg> develop openPMD_api_jll
 
 using openPMD_api_jll
-@wrapmodule openPMD_api_jll.libopenPMD_jl_path
+@wrapmodule openPMD_api_jll.get_libopenPMD_jl_path
 
 __init__() = @initcxx
 
